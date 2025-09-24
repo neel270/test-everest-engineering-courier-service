@@ -5,16 +5,16 @@ const connectDB = async (): Promise<void> => {
     const mongoURI = process.env.MONGODB_URI || 'mongodb://localhost:27017/courier_service';
 
     // Connection options to prevent deprecation warnings
-    const options: mongoose.ConnectOptions = {
-      retryWrites: true,
-      w: 'majority',
-      maxPoolSize: 10,
-      serverSelectionTimeoutMS: 5000,
-      socketTimeoutMS: 45000,
-      bufferCommands: false,
-    };
+    // const options: mongoose.ConnectOptions = {
+    //   retryWrites: true,
+    //   w: 'majority',
+    //   maxPoolSize: 10,
+    //   serverSelectionTimeoutMS: 5000,
+    //   socketTimeoutMS: 45000,
+    //   bufferCommands: false,
+    // };
 
-    const conn = await mongoose.connect(mongoURI, options);
+    const conn = await mongoose.connect(mongoURI);
 
     console.log(`MongoDB Connected: ${conn.connection.host}`);
 

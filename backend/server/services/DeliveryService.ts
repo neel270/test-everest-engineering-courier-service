@@ -50,6 +50,7 @@ export class DeliveryService {
         results,
         optimizationSteps,
         vehicles: updatedVehicles,
+        planningText,
       } = deliveryService.calculateAllDeliveryResults(
         packages,
         vehiclesWithAvailability
@@ -121,6 +122,7 @@ export class DeliveryService {
             totalPackages: packages.length,
             totalVehicles: updatedVehicles.length,
           },
+          planningText,
         },
       };
     } catch (error) {
