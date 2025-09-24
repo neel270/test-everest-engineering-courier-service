@@ -1,10 +1,11 @@
 import Package, { IPackage } from '../models/Package';
+import { PackageApiResponse, PaginatedPackagesResponse } from '../types/api';
 
 export class PackageService {
   /**
    * Get all packages with optional pagination
    */
-  static async getAllPackages(page: number = 1, limit: number = 10) {
+  static async getAllPackages(page: number = 1, limit: number = 10): Promise<PaginatedPackagesResponse> {
     try {
       const skip = (page - 1) * limit;
       const packages = await Package.find()
@@ -17,11 +18,11 @@ export class PackageService {
       return {
         success: true,
         data: {
-          packages,
+          data: packages as any,
           pagination: {
             currentPage: page,
             totalPages: Math.ceil(total / limit),
-            totalPackages: total,
+            totalItems: total,
             hasNext: page * limit < total,
             hasPrev: page > 1
           }
@@ -35,7 +36,7 @@ export class PackageService {
   /**
    * Get package by ID
    */
-  static async getPackageById(id: string) {
+  static async getPackageById(id: string): Promise<PackageApiResponse> {
     try {
       const packageData = await Package.findById(id);
       if (!packageData) {
@@ -43,7 +44,7 @@ export class PackageService {
       }
       return {
         success: true,
-        data: packageData
+        data: packageData as any
       };
     } catch (error) {
       throw new Error(`Failed to fetch package: ${error instanceof Error ? error.message : 'Unknown error'}`);
@@ -53,7 +54,7 @@ export class PackageService {
   /**
    * Create new package
    */
-  static async createPackage(packageData: Partial<IPackage>) {
+  static async createPackage(packageData: Partial<IPackage>): Promise<PackageApiResponse> {
     try {
       // Validate required fields
       if (!packageData.id || !packageData.weight || !packageData.distance) {
@@ -72,7 +73,7 @@ export class PackageService {
       return {
         success: true,
         message: 'Package created successfully',
-        data: newPackage
+        data: newPackage as any
       };
     } catch (error) {
       throw new Error(`Failed to create package: ${error instanceof Error ? error.message : 'Unknown error'}`);
@@ -82,7 +83,7 @@ export class PackageService {
   /**
    * Update package by ID
    */
-  static async updatePackage(id: string, updateData: Partial<IPackage>) {
+  static async updatePackage(id: string, updateData: Partial<IPackage>): Promise<PackageApiResponse> {
     try {
       const packageData = await Package.findByIdAndUpdate(
         id,
@@ -97,7 +98,7 @@ export class PackageService {
       return {
         success: true,
         message: 'Package updated successfully',
-        data: packageData
+        data: packageData as any
       };
     } catch (error) {
       throw new Error(`Failed to update package: ${error instanceof Error ? error.message : 'Unknown error'}`);
@@ -107,7 +108,7 @@ export class PackageService {
   /**
    * Delete package by ID
    */
-  static async deletePackage(id: string) {
+  static async deletePackage(id: string): Promise<PackageApiResponse> {
     try {
       const packageData = await Package.findByIdAndDelete(id);
       if (!packageData) {
@@ -126,12 +127,12 @@ export class PackageService {
   /**
    * Get packages by offer code
    */
-  static async getPackagesByOfferCode(offerCode: string) {
+  static async getPackagesByOfferCode(offerCode: string): Promise<PackageApiResponse> {
     try {
       const packages = await Package.find({ offerCode }).sort({ createdAt: -1 });
       return {
         success: true,
-        data: packages
+        data: packages as any
       };
     } catch (error) {
       throw new Error(`Failed to fetch packages by offer code: ${error instanceof Error ? error.message : 'Unknown error'}`);
@@ -141,7 +142,7 @@ export class PackageService {
   /**
    * Get packages by weight range
    */
-  static async getPackagesByWeightRange(minWeight: number, maxWeight: number) {
+  static async getPackagesByWeightRange(minWeight: number, maxWeight: number): Promise<PackageApiResponse> {
     try {
       const packages = await Package.find({
         weight: { $gte: minWeight, $lte: maxWeight }
@@ -149,7 +150,7 @@ export class PackageService {
 
       return {
         success: true,
-        data: packages
+        data: packages as any
       };
     } catch (error) {
       throw new Error(`Failed to fetch packages by weight range: ${error instanceof Error ? error.message : 'Unknown error'}`);

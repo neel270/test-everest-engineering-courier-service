@@ -10,7 +10,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Badge } from '@/components/ui/badge';
-import { LogOut, User, Settings, Shield, Home, Truck } from 'lucide-react';
+import { LogOut, User, Settings, Shield, Home, Truck, Package } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 
 export const Navigation = () => {
@@ -71,6 +71,18 @@ export const Navigation = () => {
               >
                 <Truck className="h-4 w-4 mr-2" />
                 Vehicles
+              </Link>
+
+              <Link
+                to="/deliveries"
+                className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium ${
+                  isActive('/deliveries') || location.pathname.startsWith('/deliveries/')
+                    ? 'border-blue-500 text-gray-900'
+                    : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'
+                }`}
+              >
+                <Package className="h-4 w-4 mr-2" />
+                Deliveries
               </Link>
 
               {user?.role === 'admin' && (
@@ -165,6 +177,18 @@ export const Navigation = () => {
           >
             <Truck className="h-4 w-4 mr-2 inline" />
             Vehicles
+          </Link>
+
+          <Link
+            to="/deliveries"
+            className={`block pl-3 pr-4 py-2 border-l-4 text-base font-medium ${
+              isActive('/deliveries') || location.pathname.startsWith('/deliveries/')
+                ? 'bg-blue-50 border-blue-500 text-blue-700'
+                : 'border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700'
+            }`}
+          >
+            <Package className="h-4 w-4 mr-2 inline" />
+            Deliveries
           </Link>
 
           {user?.role === 'admin' && (

@@ -226,7 +226,7 @@ export function Step1Card({ step }: Step1CardProps) {
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                          {pkgTimes.map((pt, i) => (
+                          {pkgTimes&&pkgTimes.map((pt, i) => (
                             <div
                               key={i}
                               className="bg-white rounded-lg p-3 border border-gray-200"

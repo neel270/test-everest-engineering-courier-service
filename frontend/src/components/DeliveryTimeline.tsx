@@ -22,7 +22,7 @@ export const DeliveryTimeline: React.FC<DeliveryTimelineProps> = ({
   if (steps.length === 0) {
     return null;
   }
-
+console.log(steps,'steps')
   const totalTime = Math.max(...steps.map((step) => step.currentTime));
   const totalPackages = steps.reduce(
     (total, step) =>

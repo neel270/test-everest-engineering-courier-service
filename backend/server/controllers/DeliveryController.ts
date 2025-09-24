@@ -155,4 +155,114 @@ export class DeliveryController {
       });
     }
   }
+
+  /**
+   * Get deliveries by vehicle ID
+   */
+  static async getDeliveriesByVehicle(req: Request, res: Response) {
+    try {
+      const { vehicleId } = req.params;
+
+      if (!vehicleId) {
+        return res.status(400).json({
+          success: false,
+          message: 'Vehicle ID is required'
+        });
+      }
+
+      const result = await DeliveryService.getDeliveriesByVehicle(vehicleId);
+      res.json(result);
+    } catch (error: Error | unknown) {
+      console.error('Get deliveries by vehicle error:', error);
+      res.status(500).json({
+        success: false,
+        message: (error as Error).message || 'Failed to fetch deliveries by vehicle',
+        error: process.env.NODE_ENV === 'development' ? (error as Error).message : undefined
+      });
+    }
+  }
+
+  /**
+   * Get deliveries with advanced filters
+   */
+  static async getDeliveriesWithFilters(req: Request, res: Response) {
+    try {
+      const {
+        startDate,
+        endDate,
+        minCost,
+        maxCost,
+        vehicleId,
+        page,
+        limit
+      } = req.query;
+
+      const filters: any = {};
+
+      // Parse date filters
+      if (startDate) {
+        filters.startDate = new Date(startDate as string);
+        if (isNaN(filters.startDate.getTime())) {
+          return res.status(400).json({
+            success: false,
+            message: 'Valid startDate is required'
+          });
+        }
+      }
+
+      if (endDate) {
+        filters.endDate = new Date(endDate as string);
+        if (isNaN(filters.endDate.getTime())) {
+          return res.status(400).json({
+            success: false,
+            message: 'Valid endDate is required'
+          });
+        }
+      }
+
+      // Parse cost filters
+      if (minCost !== undefined) {
+        filters.minCost = parseFloat(minCost as string);
+        if (isNaN(filters.minCost)) {
+          return res.status(400).json({
+            success: false,
+            message: 'Valid minCost is required'
+          });
+        }
+      }
+
+      if (maxCost !== undefined) {
+        filters.maxCost = parseFloat(maxCost as string);
+        if (isNaN(filters.maxCost)) {
+          return res.status(400).json({
+            success: false,
+            message: 'Valid maxCost is required'
+          });
+        }
+      }
+
+      // Vehicle filter
+      if (vehicleId) {
+        filters.vehicleId = vehicleId as string;
+      }
+
+      // Pagination
+      if (page) {
+        filters.page = parseInt(page as string);
+      }
+      if (limit) {
+        filters.limit = parseInt(limit as string);
+      }
+
+      const result = await DeliveryService.getDeliveriesWithFilters(filters);
+      res.json(result);
+    } catch (error: Error | unknown) {
+      console.error('Get deliveries with filters error:', error);
+      res.status(500).json({
+        success: false,
+        message: (error as Error).message || 'Failed to fetch deliveries with filters',
+        error: process.env.NODE_ENV === 'development' ? (error as Error).message : undefined
+      });
+    }
+  }
 }

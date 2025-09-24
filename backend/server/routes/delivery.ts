@@ -25,4 +25,10 @@ router.get('/date-range/search', auth, DeliveryController.getDeliveriesByDateRan
 // GET /api/delivery/cost-range
 router.get('/cost-range/search', auth, DeliveryController.getDeliveriesByCostRange);
 
+// GET /api/delivery/vehicle/:vehicleId
+router.get('/vehicle/:vehicleId', auth, DeliveryController.getDeliveriesByVehicle);
+
+// GET /api/delivery/filter
+router.get('/filter', auth, DeliveryController.getDeliveriesWithFilters);
+
 export default router;

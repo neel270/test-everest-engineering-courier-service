@@ -1,10 +1,11 @@
 import Vehicle, { IVehicle } from '../models/Vehicle';
+import { VehicleApiResponse, PaginatedVehiclesResponse } from '../types/api';
 
 export class VehicleService {
   /**
    * Get all vehicles with optional pagination
    */
-  static async getAllVehicles(page: number = 1, limit: number = 10) {
+  static async getAllVehicles(page: number = 1, limit: number = 10): Promise<PaginatedVehiclesResponse> {
     try {
       const skip = (page - 1) * limit;
       const vehicles = await Vehicle.find()
@@ -17,11 +18,11 @@ export class VehicleService {
       return {
         success: true,
         data: {
-          vehicles,
+          data: vehicles as any,
           pagination: {
             currentPage: page,
             totalPages: Math.ceil(total / limit),
-            totalVehicles: total,
+            totalItems: total,
             hasNext: page * limit < total,
             hasPrev: page > 1
           }
@@ -35,7 +36,7 @@ export class VehicleService {
   /**
    * Get vehicle by ID
    */
-  static async getVehicleById(id: string) {
+  static async getVehicleById(id: string): Promise<VehicleApiResponse> {
     try {
       const vehicle = await Vehicle.findById(id);
       if (!vehicle) {
@@ -43,7 +44,7 @@ export class VehicleService {
       }
       return {
         success: true,
-        data: vehicle
+        data: vehicle as any
       };
     } catch (error) {
       throw new Error(`Failed to fetch vehicle: ${error instanceof Error ? error.message : 'Unknown error'}`);
@@ -53,7 +54,7 @@ export class VehicleService {
   /**
    * Create new vehicle
    */
-  static async createVehicle(vehicleData: Partial<IVehicle>) {
+  static async createVehicle(vehicleData: Partial<IVehicle>): Promise<VehicleApiResponse> {
     try {
       // Validate required fields
       if (!vehicleData.name || !vehicleData.maxSpeed || !vehicleData.maxCarriableWeight) {
@@ -66,7 +67,7 @@ export class VehicleService {
       return {
         success: true,
         message: 'Vehicle created successfully',
-        data: newVehicle
+        data: newVehicle as any
       };
     } catch (error) {
       throw new Error(`Failed to create vehicle: ${error instanceof Error ? error.message : 'Unknown error'}`);
@@ -76,7 +77,7 @@ export class VehicleService {
   /**
    * Update vehicle by ID
    */
-  static async updateVehicle(id: string, updateData: Partial<IVehicle>) {
+  static async updateVehicle(id: string, updateData: Partial<IVehicle>): Promise<VehicleApiResponse> {
     try {
       const vehicle = await Vehicle.findByIdAndUpdate(
         id,
@@ -91,7 +92,7 @@ export class VehicleService {
       return {
         success: true,
         message: 'Vehicle updated successfully',
-        data: vehicle
+        data: vehicle as any
       };
     } catch (error) {
       throw new Error(`Failed to update vehicle: ${error instanceof Error ? error.message : 'Unknown error'}`);
@@ -101,7 +102,7 @@ export class VehicleService {
   /**
    * Delete vehicle by ID
    */
-  static async deleteVehicle(id: string) {
+  static async deleteVehicle(id: string): Promise<VehicleApiResponse> {
     try {
       const vehicle = await Vehicle.findByIdAndDelete(id);
       if (!vehicle) {
@@ -120,12 +121,12 @@ export class VehicleService {
   /**
    * Get available vehicles (with availableTime = 0)
    */
-  static async getAvailableVehicles() {
+  static async getAvailableVehicles(): Promise<VehicleApiResponse> {
     try {
       const vehicles = await Vehicle.find({ availableTime: 0 }).sort({ createdAt: -1 });
       return {
         success: true,
-        data: vehicles
+        data: vehicles as any
       };
     } catch (error) {
       throw new Error(`Failed to fetch available vehicles: ${error instanceof Error ? error.message : 'Unknown error'}`);
@@ -135,12 +136,12 @@ export class VehicleService {
   /**
    * Get all vehicles for delivery calculation
    */
-  static async getAllVehiclesForDelivery() {
+  static async getAllVehiclesForDelivery(): Promise<VehicleApiResponse> {
     try {
       const vehicles = await Vehicle.find().sort({ createdAt: -1 });
       return {
         success: true,
-        data: vehicles
+        data: vehicles as any
       };
     } catch (error) {
       throw new Error(`Failed to fetch vehicles for delivery: ${error instanceof Error ? error.message : 'Unknown error'}`);
@@ -150,7 +151,7 @@ export class VehicleService {
   /**
    * Get vehicles by speed range
    */
-  static async getVehiclesBySpeedRange(minSpeed: number, maxSpeed: number) {
+  static async getVehiclesBySpeedRange(minSpeed: number, maxSpeed: number): Promise<VehicleApiResponse> {
     try {
       const vehicles = await Vehicle.find({
         maxSpeed: { $gte: minSpeed, $lte: maxSpeed }
@@ -158,7 +159,7 @@ export class VehicleService {
 
       return {
         success: true,
-        data: vehicles
+        data: vehicles as any
       };
     } catch (error) {
       throw new Error(`Failed to fetch vehicles by speed range: ${error instanceof Error ? error.message : 'Unknown error'}`);
@@ -168,7 +169,7 @@ export class VehicleService {
   /**
    * Get vehicles by weight capacity range
    */
-  static async getVehiclesByWeightCapacity(minWeight: number, maxWeight: number) {
+  static async getVehiclesByWeightCapacity(minWeight: number, maxWeight: number): Promise<VehicleApiResponse> {
     try {
       const vehicles = await Vehicle.find({
         maxCarriableWeight: { $gte: minWeight, $lte: maxWeight }
@@ -176,7 +177,7 @@ export class VehicleService {
 
       return {
         success: true,
-        data: vehicles
+        data: vehicles as any
       };
     } catch (error) {
       throw new Error(`Failed to fetch vehicles by weight capacity: ${error instanceof Error ? error.message : 'Unknown error'}`);
@@ -186,7 +187,7 @@ export class VehicleService {
   /**
    * Update vehicle availability time
    */
-  static async updateVehicleAvailability(id: string, availableTime: number) {
+  static async updateVehicleAvailability(id: string, availableTime: number): Promise<VehicleApiResponse> {
     try {
       const vehicle = await Vehicle.findByIdAndUpdate(
         id,
@@ -201,7 +202,7 @@ export class VehicleService {
       return {
         success: true,
         message: 'Vehicle availability updated successfully',
-        data: vehicle
+        data: vehicle as any
       };
     } catch (error) {
       throw new Error(`Failed to update vehicle availability: ${error instanceof Error ? error.message : 'Unknown error'}`);

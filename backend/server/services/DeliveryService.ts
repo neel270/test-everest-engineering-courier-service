@@ -5,27 +5,17 @@ import {
   DeliveryService as SharedDeliveryService,
   DeliveryResult,
 } from "../lib/delivery-service";
+import {
+  DeliveryCalculationRequest,
+  DeliveryFilters,
+  ApiResponse,
+} from "../types";
 
 export class DeliveryService {
   /**
    * Calculate delivery costs and save to database
    */
-  static async calculateDeliveryCosts(deliveryData: {
-    packages: Array<{
-      id: string;
-      weight: number;
-      distance: number;
-      offerCode?: string;
-    }>;
-    vehicles: Array<{
-      id: number;
-      name: string;
-      maxSpeed: number;
-      maxCarriableWeight: number;
-      availableTime?: number;
-    }>;
-    baseDeliveryCost: number;
-  }) {
+  static async calculateDeliveryCosts(deliveryData: DeliveryCalculationRequest): Promise<ApiResponse<any>> {
     try {
       const { packages, vehicles, baseDeliveryCost } = deliveryData;
 
@@ -87,7 +77,6 @@ export class DeliveryService {
             { id: veh.id },
             {
               id: veh.id,
-              name: veh.name,
               maxSpeed: veh.maxSpeed,
               maxCarriableWeight: veh.maxCarriableWeight,
               availableTime: veh.availableTime ?? 0,
@@ -137,14 +126,13 @@ export class DeliveryService {
   /**
    * Get delivery history with pagination
    */
-  static async getDeliveryHistory(page: number = 1, limit: number = 10) {
+  static async getDeliveryHistory(page: number = 1, limit: number = 10): Promise<ApiResponse<any>> {
     try {
       const skip = (page - 1) * limit;
       const deliveries = await Delivery.find()
         .sort({ createdAt: -1 })
         .skip(skip)
         .limit(limit)
-        .select("totalCost totalDiscount createdAt")
         .populate({ path: "packages", select: "id" })
         .populate({
           path: "vehicles",
@@ -178,7 +166,7 @@ export class DeliveryService {
   /**
    * Get delivery by ID
    */
-  static async getDeliveryById(id: string) {
+  static async getDeliveryById(id: string): Promise<ApiResponse<any>> {
     try {
       const delivery = await Delivery.findById(id)
         .populate({ path: "packages", select: "id weight distance offerCode" })
@@ -205,7 +193,7 @@ export class DeliveryService {
   /**
    * Get delivery statistics
    */
-  static async getDeliveryStats() {
+  static async getDeliveryStats(): Promise<ApiResponse<any>> {
     try {
       const totalDeliveries = await Delivery.countDocuments();
       const totalCost = await Delivery.aggregate([
@@ -244,7 +232,7 @@ export class DeliveryService {
   /**
    * Delete delivery by ID
    */
-  static async deleteDelivery(id: string) {
+  static async deleteDelivery(id: string): Promise<ApiResponse> {
     try {
       const delivery = await Delivery.findByIdAndDelete(id);
       if (!delivery) {
@@ -267,7 +255,7 @@ export class DeliveryService {
   /**
    * Get deliveries by date range
    */
-  static async getDeliveriesByDateRange(startDate: Date, endDate: Date) {
+  static async getDeliveriesByDateRange(startDate: Date, endDate: Date): Promise<ApiResponse<any>> {
     try {
       const deliveries = await Delivery.find({
         createdAt: { $gte: startDate, $lte: endDate },
@@ -289,7 +277,7 @@ export class DeliveryService {
   /**
    * Get deliveries by cost range
    */
-  static async getDeliveriesByCostRange(minCost: number, maxCost: number) {
+  static async getDeliveriesByCostRange(minCost: number, maxCost: number): Promise<ApiResponse<any>> {
     try {
       const deliveries = await Delivery.find({
         totalCost: { $gte: minCost, $lte: maxCost },
@@ -302,6 +290,105 @@ export class DeliveryService {
     } catch (error) {
       throw new Error(
         `Failed to fetch deliveries by cost range: ${
+          error instanceof Error ? error.message : "Unknown error"
+        }`
+      );
+    }
+  }
+
+  /**
+   * Get deliveries by vehicle ID
+   */
+  static async getDeliveriesByVehicle(vehicleId: string): Promise<ApiResponse<any>> {
+    try {
+      const deliveries = await Delivery.find({
+        vehicles: vehicleId,
+      })
+        .sort({ createdAt: -1 })
+        .populate({ path: "packages", select: "id weight distance offerCode" })
+        .populate({
+          path: "vehicles",
+          select: "id name maxSpeed maxCarriableWeight availableTime",
+        });
+
+      return {
+        success: true,
+        data: deliveries,
+      };
+    } catch (error) {
+      throw new Error(
+        `Failed to fetch deliveries by vehicle: ${
+          error instanceof Error ? error.message : "Unknown error"
+        }`
+      );
+    }
+  }
+
+  /**
+   * Get deliveries with advanced filtering
+   */
+  static async getDeliveriesWithFilters(filters: DeliveryFilters & { page?: number; limit?: number }): Promise<ApiResponse<any>> {
+    try {
+      const {
+        startDate,
+        endDate,
+        minCost,
+        maxCost,
+        vehicleId,
+        page = 1,
+        limit = 10,
+      } = filters;
+
+      const skip = (page - 1) * limit;
+      let query: any = {};
+
+      // Date range filter
+      if (startDate || endDate) {
+        query.createdAt = {};
+        if (startDate) query.createdAt.$gte = startDate;
+        if (endDate) query.createdAt.$lte = endDate;
+      }
+
+      // Cost range filter
+      if (minCost !== undefined || maxCost !== undefined) {
+        query.totalCost = {};
+        if (minCost !== undefined) query.totalCost.$gte = minCost;
+        if (maxCost !== undefined) query.totalCost.$lte = maxCost;
+      }
+
+      // Vehicle filter
+      if (vehicleId) {
+        query.vehicles = vehicleId;
+      }
+
+      const deliveries = await Delivery.find(query)
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit)
+        .populate({ path: "packages", select: "id weight distance offerCode" })
+        .populate({
+          path: "vehicles",
+          select: "id name maxSpeed maxCarriableWeight availableTime",
+        });
+
+      const total = await Delivery.countDocuments(query);
+
+      return {
+        success: true,
+        data: {
+          items: deliveries,
+          pagination: {
+            currentPage: page,
+            totalPages: Math.ceil(total / limit),
+            totalItems: total,
+            hasNext: page * limit < total,
+            hasPrev: page > 1,
+          },
+        },
+      };
+    } catch (error) {
+      throw new Error(
+        `Failed to fetch deliveries with filters: ${
           error instanceof Error ? error.message : "Unknown error"
         }`
       );

@@ -12,6 +12,8 @@ import { Navigation } from "@/components/auth/Navigation";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import { VehicleManagement } from "./pages/VehicleManagement";
+import DeliveryList from "./pages/DeliveryList";
+import DeliveryView from "./pages/DeliveryView";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -74,6 +76,32 @@ const App = () => (
                   <div className="min-h-screen bg-gray-50">
                     <Navigation />
                     <VehicleManagement />
+                  </div>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/deliveries"
+              element={
+                <ProtectedRoute>
+                  <div className="min-h-screen bg-gray-50">
+                    <Navigation />
+                    <div className="container mx-auto py-8">
+                      <DeliveryList />
+                    </div>
+                  </div>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/deliveries/:id"
+              element={
+                <ProtectedRoute>
+                  <div className="min-h-screen bg-gray-50">
+                    <Navigation />
+                    <div className="container mx-auto py-8">
+                      <DeliveryView />
+                    </div>
                   </div>
                 </ProtectedRoute>
               }

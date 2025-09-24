@@ -1,4 +1,22 @@
 import axios from 'axios';
+import {
+  ApiResponse,
+  PaginationInfo,
+  PaginatedResponse,
+  UserApiResponse,
+  UsersApiResponse,
+  PaginatedUsersResponse,
+  PackageApiResponse,
+  PackagesApiResponse,
+  PaginatedPackagesResponse,
+  VehicleApiResponse,
+  VehiclesApiResponse,
+  PaginatedVehiclesResponse,
+  DeliveryApiResponse,
+  DeliveriesApiResponse,
+  PaginatedDeliveriesResponse,
+  DeliveryStatsResponse,
+} from '../types/api';
 
 // Create axios instance with base configuration
 const api = axios.create({
@@ -34,31 +52,7 @@ api.interceptors.response.use(
   }
 );
 
-// API response types
-export interface ApiResponse<T = unknown> {
-  success: boolean;
-  data?: T;
-  message?: string;
-  error?: string;
-}
-
-export interface PaginationInfo {
-  currentPage: number;
-  totalPages: number;
-  totalItems: number;
-  hasNext: boolean;
-  hasPrev: boolean;
-}
-
-export interface PaginatedResponse<T> {
-  success: boolean;
-  data: {
-    items: T[];
-    pagination: PaginationInfo;
-  };
-  message?: string;
-  error?: string;
-}
+// API response types are now imported from types
 
 // Auth API
 export const authApi = {
@@ -67,28 +61,28 @@ export const authApi = {
     email: string;
     password: string;
     role?: 'admin' | 'user';
-  }) => {
-    const response = await api.post<ApiResponse>('/auth/register', userData);
+  }): Promise<UserApiResponse> => {
+    const response = await api.post<UserApiResponse>('/auth/register', userData);
     return response.data;
   },
 
-  login: async (credentials: { email: string; password: string }) => {
-    const response = await api.post<ApiResponse>('/auth/login', credentials);
+  login: async (credentials: { email: string; password: string }): Promise<ApiResponse<{ user: { id: string; name: string; email: string; role: string; isActive: boolean; createdAt: Date; updatedAt: Date }; token: string }>> => {
+    const response = await api.post<ApiResponse<{ user: { id: string; name: string; email: string; role: string; isActive: boolean; createdAt: Date; updatedAt: Date }; token: string }>>('/auth/login', credentials);
     return response.data;
   },
 
-  getProfile: async () => {
-    const response = await api.get<ApiResponse>('/auth/profile');
+  getProfile: async (): Promise<UserApiResponse> => {
+    const response = await api.get<UserApiResponse>('/auth/profile');
     return response.data;
   },
 
-  getUsers: async (params?: { page?: number; limit?: number }) => {
-    const response = await api.get<ApiResponse>('/auth/users', { params });
+  getUsers: async (params?: { page?: number; limit?: number }): Promise<PaginatedUsersResponse> => {
+    const response = await api.get<PaginatedUsersResponse>('/auth/users', { params });
     return response.data;
   },
 
-  getUserById: async (id: string) => {
-    const response = await api.get<ApiResponse>(`/auth/users/${id}`);
+  getUserById: async (id: string): Promise<UserApiResponse> => {
+    const response = await api.get<UserApiResponse>(`/auth/users/${id}`);
     return response.data;
   },
 
@@ -97,12 +91,12 @@ export const authApi = {
     email?: string;
     role?: 'admin' | 'user';
     isActive?: boolean;
-  }) => {
-    const response = await api.put<ApiResponse>(`/auth/users/${id}`, userData);
+  }): Promise<UserApiResponse> => {
+    const response = await api.put<UserApiResponse>(`/auth/users/${id}`, userData);
     return response.data;
   },
 
-  deleteUser: async (id: string) => {
+  deleteUser: async (id: string): Promise<ApiResponse> => {
     const response = await api.delete<ApiResponse>(`/auth/users/${id}`);
     return response.data;
   },
@@ -110,18 +104,18 @@ export const authApi = {
   changePassword: async (passwordData: {
     oldPassword: string;
     newPassword: string;
-  }) => {
+  }): Promise<ApiResponse> => {
     const response = await api.put<ApiResponse>('/auth/change-password', passwordData);
     return response.data;
   },
 
-  toggleUserStatus: async (id: string) => {
-    const response = await api.put<ApiResponse>(`/auth/users/${id}/status`);
+  toggleUserStatus: async (id: string): Promise<UserApiResponse> => {
+    const response = await api.put<UserApiResponse>(`/auth/users/${id}/status`);
     return response.data;
   },
 
-  getUsersByRole: async (role: 'admin' | 'user') => {
-    const response = await api.get<ApiResponse>(`/auth/users/role/${role}`);
+  getUsersByRole: async (role: 'admin' | 'user'): Promise<UsersApiResponse> => {
+    const response = await api.get<UsersApiResponse>(`/auth/users/role/${role}`);
     return response.data;
   },
 };
@@ -309,6 +303,24 @@ export const deliveryApi = {
     const response = await api.get<ApiResponse>('/delivery/cost-range/search', {
       params: { minCost, maxCost }
     });
+    return response.data;
+  },
+
+  getDeliveriesByVehicle: async (vehicleId: string) => {
+    const response = await api.get<ApiResponse>(`/delivery/vehicle/${vehicleId}`);
+    return response.data;
+  },
+
+  getDeliveriesWithFilters: async (filters: {
+    startDate?: string;
+    endDate?: string;
+    minCost?: number;
+    maxCost?: number;
+    vehicleId?: string;
+    page?: number;
+    limit?: number;
+  }) => {
+    const response = await api.get<ApiResponse>('/delivery/filter', { params: filters });
     return response.data;
   },
 };

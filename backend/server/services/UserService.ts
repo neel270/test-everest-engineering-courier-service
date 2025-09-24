@@ -1,5 +1,7 @@
 import User, { IUser } from '../models/User';
 import jwt from 'jsonwebtoken';
+import { UserApiResponse, PaginatedUsersResponse } from '../types/api';
+import { RegisterResponse, LoginResponse } from '../types/user';
 
 export class UserService {
   /**
@@ -10,7 +12,7 @@ export class UserService {
     email: string;
     password: string;
     role?: 'admin' | 'user';
-  }) {
+  }): Promise<RegisterResponse> {
     try {
       const { name, email, password, role = 'user' } = userData;
 
@@ -37,22 +39,21 @@ export class UserService {
 
       // Generate JWT token
       const token = jwt.sign(
-        { id: user._id },
+        { id: (user._id as any).toString() },
         process.env.JWT_SECRET || 'fallback-secret'
       );
 
       return {
-        success: true,
-        message: 'User registered successfully',
-        data: {
-          token,
-          user: {
-            id: user._id,
-            name: user.name,
-            email: user.email,
-            role: user.role
-          }
-        }
+        user: {
+          id: (user._id as any).toString(),
+          name: user.name,
+          email: user.email,
+          role: user.role,
+          isActive: user.isActive,
+          createdAt: user.createdAt,
+          updatedAt: user.updatedAt
+        },
+        token
       };
     } catch (error) {
       throw new Error(`Failed to register user: ${error instanceof Error ? error.message : 'Unknown error'}`);
@@ -62,7 +63,7 @@ export class UserService {
   /**
    * Login user
    */
-  static async loginUser(credentials: { email: string; password: string }) {
+  static async loginUser(credentials: { email: string; password: string }): Promise<LoginResponse> {
     try {
       const { email, password } = credentials;
 
@@ -90,22 +91,21 @@ export class UserService {
 
       // Generate JWT token
       const token = jwt.sign(
-        { id: user._id },
+        { id: (user._id as any).toString() },
         process.env.JWT_SECRET || 'fallback-secret'
       );
 
       return {
-        success: true,
-        message: 'Login successful',
-        data: {
-          token,
-          user: {
-            id: user._id,
-            name: user.name,
-            email: user.email,
-            role: user.role
-          }
-        }
+        user: {
+          id: (user._id as any).toString(),
+          name: user.name,
+          email: user.email,
+          role: user.role,
+          isActive: user.isActive,
+          createdAt: user.createdAt,
+          updatedAt: user.updatedAt
+        },
+        token
       };
     } catch (error) {
       throw new Error(`Failed to login: ${error instanceof Error ? error.message : 'Unknown error'}`);
@@ -115,7 +115,7 @@ export class UserService {
   /**
    * Get user profile
    */
-  static async getUserProfile(userId: string) {
+  static async getUserProfile(userId: string|number): Promise<UserApiResponse> {
     try {
       const user = await User.findById(userId);
       if (!user) {
@@ -125,14 +125,13 @@ export class UserService {
       return {
         success: true,
         data: {
-          user: {
-            id: user._id,
-            name: user.name,
-            email: user.email,
-            role: user.role,
-            isActive: user.isActive,
-            createdAt: user.createdAt
-          }
+          id: (user._id as any).toString(),
+          name: user.name,
+          email: user.email,
+          role: user.role,
+          isActive: user.isActive,
+          createdAt: user.createdAt,
+          updatedAt: user.updatedAt
         }
       };
     } catch (error) {
@@ -143,7 +142,7 @@ export class UserService {
   /**
    * Get all users with pagination
    */
-  static async getAllUsers(page: number = 1, limit: number = 10) {
+  static async getAllUsers(page: number = 1, limit: number = 10): Promise<PaginatedUsersResponse> {
     try {
       const skip = (page - 1) * limit;
       const users = await User.find()
@@ -157,11 +156,11 @@ export class UserService {
       return {
         success: true,
         data: {
-          users,
+          data: users as any,
           pagination: {
             currentPage: page,
             totalPages: Math.ceil(total / limit),
-            totalUsers: total,
+            totalItems: total,
             hasNext: page * limit < total,
             hasPrev: page > 1
           }
@@ -175,7 +174,7 @@ export class UserService {
   /**
    * Get user by ID
    */
-  static async getUserById(id: string) {
+  static async getUserById(id: string): Promise<UserApiResponse> {
     try {
       const user = await User.findById(id).select('-password');
       if (!user) {
@@ -184,7 +183,7 @@ export class UserService {
 
       return {
         success: true,
-        data: user
+        data: user as any
       };
     } catch (error) {
       throw new Error(`Failed to fetch user: ${error instanceof Error ? error.message : 'Unknown error'}`);
@@ -194,7 +193,7 @@ export class UserService {
   /**
    * Update user
    */
-  static async updateUser(id: string, updateData: Partial<IUser>) {
+  static async updateUser(id: string, updateData: Partial<IUser>): Promise<UserApiResponse> {
     try {
       // Prevent password update through this method
       if (updateData.password) {
@@ -214,7 +213,7 @@ export class UserService {
       return {
         success: true,
         message: 'User updated successfully',
-        data: user
+        data: user as any
       };
     } catch (error) {
       throw new Error(`Failed to update user: ${error instanceof Error ? error.message : 'Unknown error'}`);
@@ -224,7 +223,7 @@ export class UserService {
   /**
    * Delete user
    */
-  static async deleteUser(id: string) {
+  static async deleteUser(id: string): Promise<UserApiResponse> {
     try {
       const user = await User.findByIdAndDelete(id);
       if (!user) {
@@ -243,7 +242,7 @@ export class UserService {
   /**
    * Change user password
    */
-  static async changePassword(userId: string, oldPassword: string, newPassword: string) {
+  static async changePassword(userId: string|number, oldPassword: string, newPassword: string): Promise<UserApiResponse> {
     try {
       const user = await User.findById(userId).select('+password');
       if (!user) {
@@ -272,7 +271,7 @@ export class UserService {
   /**
    * Toggle user active status
    */
-  static async toggleUserStatus(id: string) {
+  static async toggleUserStatus(id: string): Promise<UserApiResponse> {
     try {
       const user = await User.findById(id);
       if (!user) {
@@ -285,7 +284,7 @@ export class UserService {
       return {
         success: true,
         message: `User ${user.isActive ? 'activated' : 'deactivated'} successfully`,
-        data: user
+        data: user as any
       };
     } catch (error) {
       throw new Error(`Failed to toggle user status: ${error instanceof Error ? error.message : 'Unknown error'}`);
@@ -295,12 +294,12 @@ export class UserService {
   /**
    * Get users by role
    */
-  static async getUsersByRole(role: 'admin' | 'user') {
+  static async getUsersByRole(role: 'admin' | 'user'): Promise<UserApiResponse> {
     try {
       const users = await User.find({ role }).sort({ createdAt: -1 }).select('-password');
       return {
         success: true,
-        data: users
+        data: users as any
       };
     } catch (error) {
       throw new Error(`Failed to fetch users by role: ${error instanceof Error ? error.message : 'Unknown error'}`);
