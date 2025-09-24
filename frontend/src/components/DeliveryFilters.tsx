@@ -14,6 +14,8 @@ interface DeliveryFiltersProps {
     minCost?: number;
     maxCost?: number;
     vehicleId?: string;
+    minTime?: number;
+    maxTime?: number;
   };
   onFiltersChange: (filters: {
     startDate?: string;
@@ -21,6 +23,8 @@ interface DeliveryFiltersProps {
     minCost?: number;
     maxCost?: number;
     vehicleId?: string;
+    minTime?: number;
+    maxTime?: number;
   }) => void;
   onApplyFilters: () => void;
   onClearFilters: () => void;
@@ -40,7 +44,7 @@ export const DeliveryFilters: React.FC<DeliveryFiltersProps> = ({
     },
   });
 
-  const vehicles = (vehiclesData as { items: unknown[] })?.items || [];
+  const vehicles = (vehiclesData as { data: { _id: string; id: number; maxSpeed: number }[] })?.data || [];
 
   const handleDateChange = (field: 'startDate' | 'endDate', value: string) => {
     onFiltersChange({
@@ -64,12 +68,22 @@ export const DeliveryFilters: React.FC<DeliveryFiltersProps> = ({
     });
   };
 
+  const handleTimeChange = (field: 'minTime' | 'maxTime', value: string) => {
+    const numValue = value === '' ? undefined : parseFloat(value);
+    onFiltersChange({
+      ...filters,
+      [field]: numValue,
+    });
+  };
+
   const hasActiveFilters =
     filters.startDate ||
     filters.endDate ||
     filters.minCost !== undefined ||
     filters.maxCost !== undefined ||
-    filters.vehicleId;
+    filters.vehicleId ||
+    filters.minTime !== undefined ||
+    filters.maxTime !== undefined;
 
   const formatDate = (dateString: string) => {
     if (!dateString) return '';
@@ -155,6 +169,27 @@ export const DeliveryFilters: React.FC<DeliveryFiltersProps> = ({
             />
           </div>
 
+          {/* Time Range */}
+          <div className="space-y-2">
+            <Label>Min Time (hours)</Label>
+            <Input
+              type="number"
+              placeholder="0"
+              value={filters.minTime || ''}
+              onChange={(e) => handleTimeChange('minTime', e.target.value)}
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label>Max Time (hours)</Label>
+            <Input
+              type="number"
+              placeholder="24"
+              value={filters.maxTime || ''}
+              onChange={(e) => handleTimeChange('maxTime', e.target.value)}
+            />
+          </div>
+
           {/* Apply Button */}
           <div className="flex items-end">
             <Button onClick={onApplyFilters} className="w-full">
@@ -191,6 +226,16 @@ export const DeliveryFilters: React.FC<DeliveryFiltersProps> = ({
               {filters.maxCost !== undefined && (
                 <span className="inline-flex items-center px-2 py-1 rounded-md text-xs bg-purple-100 text-purple-800">
                   Max: ${filters.maxCost}
+                </span>
+              )}
+              {filters.minTime !== undefined && (
+                <span className="inline-flex items-center px-2 py-1 rounded-md text-xs bg-orange-100 text-orange-800">
+                  Min Time: {filters.minTime}h
+                </span>
+              )}
+              {filters.maxTime !== undefined && (
+                <span className="inline-flex items-center px-2 py-1 rounded-md text-xs bg-orange-100 text-orange-800">
+                  Max Time: {filters.maxTime}h
                 </span>
               )}
             </div>

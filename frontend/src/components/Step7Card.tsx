@@ -34,7 +34,61 @@ export function Step7Card({ step }: Step7CardProps) {
   }
 
   const currentTime = step.currentTime ?? 0;
-  const vehicleAssignments = step.vehicleAssignments || [];
+
+  // Merge vehicle assignments if duplicates exist
+  const mergeVehicleAssignments = (assignments: Array<{
+    vehicleId: string;
+    name: string;
+    packages: Array<{ id: string; weight: number }>;
+    totalWeight: number;
+    availableAfter: number;
+    maxDistance: number;
+    deliveryTime: number;
+    returnTime: number;
+    vehicleSpeed?: number;
+  }>) => {
+    const merged = new Map();
+
+    assignments.forEach(assignment => {
+      const key = assignment.vehicleId;
+
+      if (merged.has(key)) {
+        // Merge with existing assignment
+        const existing = merged.get(key);
+
+        // Merge arrays (packages)
+        existing.packages = [...existing.packages, ...assignment.packages];
+
+        // Add numeric values
+        existing.totalWeight += assignment.totalWeight;
+        existing.maxDistance += assignment.maxDistance;
+        existing.availableAfter = Math.max(existing.availableAfter, assignment.availableAfter);
+
+        // Add time values
+        existing.deliveryTime += assignment.deliveryTime;
+        existing.returnTime += assignment.returnTime;
+
+        // Keep the first name (or could merge if needed)
+        if (!existing.name) {
+          existing.name = assignment.name;
+        }
+      } else {
+        // Add new assignment
+        merged.set(key, { ...assignment });
+      }
+    });
+
+    return Array.from(merged.values());
+  };
+
+  const vehicleAssignments = step.vehicleAssignments
+    ? mergeVehicleAssignments(
+        step.vehicleAssignments.map((assignment) => ({
+          ...assignment,
+          vehicleId: String(assignment.vehicleId),
+        }))
+      )
+    : [];
 
   // Calculate summary statistics
   const totalPackages = vehicleAssignments.reduce(
@@ -345,8 +399,7 @@ export function Step7Card({ step }: Step7CardProps) {
 
                 <div className="bg-white/90 rounded-lg p-4 border-2 border-yellow-300">
                   <p className="text-lg text-gray-700 mb-2">
-                    <span className="font-bold text-yellow-800">
-                      🎯 Optimization Success:
+                    <span className="font-bold text-yellow-800">Optimization Success:
                     </span>{" "}
                     All packages have been efficiently assigned with optimal
                     routing, balanced weight distribution, and minimal delivery

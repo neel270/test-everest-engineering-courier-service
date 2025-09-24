@@ -28,11 +28,11 @@ export const CourierCalculator = () => {
     { id: "PKG3", weight: 175, distance: 100, offerCode: "OFR003" },
     { id: "PKG4", weight: 110, distance: 60, offerCode: "OFR002" },
     { id: "PKG5", weight: 155, distance: 95, offerCode: "OFR001" },
-    // { id: "PKG6", weight: 35, distance: 45, offerCode: "OFR002" },
-    // { id: "PKG7", weight: 90, distance: 80, offerCode: "OFR003" },
-    // { id: "PKG8", weight: 120, distance: 70, offerCode: "OFR001" },
-    // { id: "PKG9", weight: 65, distance: 55, offerCode: "OFR002" },
-    // { id: "PKG10", weight: 85, distance: 110, offerCode: "OFR003" },
+    { id: "PKG6", weight: 35, distance: 45, offerCode: "OFR002" },
+    { id: "PKG7", weight: 90, distance: 80, offerCode: "OFR003" },
+    { id: "PKG8", weight: 120, distance: 70, offerCode: "OFR001" },
+    { id: "PKG9", weight: 65, distance: 55, offerCode: "OFR002" },
+    { id: "PKG10", weight: 85, distance: 110, offerCode: "OFR003" },
   ]);
   const [results, setResults] = useState<
     Array<{

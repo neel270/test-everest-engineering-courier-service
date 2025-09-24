@@ -96,6 +96,8 @@ export interface DeliveryFilters {
   maxCost?: number;
   vehicleId?: string;
   search?: string;
+  minTime?: number;
+  maxTime?: number;
 }
 
 export interface DeliveryStats {

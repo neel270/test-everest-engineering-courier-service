@@ -1,21 +1,10 @@
 import axios from 'axios';
 import {
   ApiResponse,
-  PaginationInfo,
-  PaginatedResponse,
   UserApiResponse,
   UsersApiResponse,
   PaginatedUsersResponse,
-  PackageApiResponse,
-  PackagesApiResponse,
-  PaginatedPackagesResponse,
-  VehicleApiResponse,
-  VehiclesApiResponse,
-  PaginatedVehiclesResponse,
-  DeliveryApiResponse,
-  DeliveriesApiResponse,
   PaginatedDeliveriesResponse,
-  DeliveryStatsResponse,
 } from '../types/api';
 
 // Create axios instance with base configuration
@@ -272,8 +261,8 @@ export const deliveryApi = {
     return response.data;
   },
 
-  getDeliveryHistory: async (params?: { page?: number; limit?: number }) => {
-    const response = await api.get<ApiResponse>('/delivery/history', { params });
+  getDeliveryHistory: async (params?: { page?: number; limit?: number }): Promise<PaginatedDeliveriesResponse> => {
+    const response = await api.get<PaginatedDeliveriesResponse>('/delivery/history', { params });
     return response.data;
   },
 
@@ -317,10 +306,12 @@ export const deliveryApi = {
     minCost?: number;
     maxCost?: number;
     vehicleId?: string;
+    minTime?: number;
+    maxTime?: number;
     page?: number;
     limit?: number;
-  }) => {
-    const response = await api.get<ApiResponse>('/delivery/filter', { params: filters });
+  }): Promise<PaginatedDeliveriesResponse> => {
+    const response = await api.get<PaginatedDeliveriesResponse>('/delivery/filter', { params: filters });
     return response.data;
   },
 };

@@ -36,9 +36,13 @@ export const VehicleList: React.FC<VehicleListProps> = ({ onVehicleSelect }) => 
 
   useEffect(() => {
     if (vehiclesQuery.data) {
-      setVehicles(vehiclesQuery.data.vehicles);
-      setTotalPages(vehiclesQuery.data.pagination.totalPages);
-      setCurrentPage(vehiclesQuery.data.pagination.currentPage);
+      const response = vehiclesQuery.data as {
+        data: Vehicle[];
+        pagination: { totalPages: number; currentPage: number };
+      };
+      setVehicles(response.data);
+      setTotalPages(response.pagination.totalPages);
+      setCurrentPage(response.pagination.currentPage);
     }
   }, [vehiclesQuery.data]);
 

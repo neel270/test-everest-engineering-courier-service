@@ -54,7 +54,7 @@ export interface DeliveryCalculationRequest {
 }
 
 export interface DeliveryResponse {
-  id: string;
+  _id: string;
   packages: string[];
   vehicles: string[];
   baseDeliveryCost: number;
@@ -96,6 +96,8 @@ export interface DeliveryFilters {
   maxCost?: number;
   vehicleId?: string;
   search?: string;
+  minTime?: number;
+  maxTime?: number;
 }
 
 export interface DeliveryStats {

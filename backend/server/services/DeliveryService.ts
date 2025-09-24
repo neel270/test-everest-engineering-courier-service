@@ -15,7 +15,9 @@ export class DeliveryService {
   /**
    * Calculate delivery costs and save to database
    */
-  static async calculateDeliveryCosts(deliveryData: DeliveryCalculationRequest): Promise<ApiResponse<any>> {
+  static async calculateDeliveryCosts(
+    deliveryData: DeliveryCalculationRequest
+  ): Promise<ApiResponse<any>> {
     try {
       const { packages, vehicles, baseDeliveryCost } = deliveryData;
 
@@ -126,7 +128,10 @@ export class DeliveryService {
   /**
    * Get delivery history with pagination
    */
-  static async getDeliveryHistory(page: number = 1, limit: number = 10): Promise<ApiResponse<any>> {
+  static async getDeliveryHistory(
+    page: number = 1,
+    limit: number = 10
+  ): Promise<ApiResponse<any>> {
     try {
       const skip = (page - 1) * limit;
       const deliveries = await Delivery.find()
@@ -144,11 +149,11 @@ export class DeliveryService {
       return {
         success: true,
         data: {
-          deliveries,
+          items: deliveries,
           pagination: {
             currentPage: page,
             totalPages: Math.ceil(total / limit),
-            totalDeliveries: total,
+            totalItems: total,
             hasNext: page * limit < total,
             hasPrev: page > 1,
           },
@@ -255,7 +260,10 @@ export class DeliveryService {
   /**
    * Get deliveries by date range
    */
-  static async getDeliveriesByDateRange(startDate: Date, endDate: Date): Promise<ApiResponse<any>> {
+  static async getDeliveriesByDateRange(
+    startDate: Date,
+    endDate: Date
+  ): Promise<ApiResponse<any>> {
     try {
       const deliveries = await Delivery.find({
         createdAt: { $gte: startDate, $lte: endDate },
@@ -277,7 +285,10 @@ export class DeliveryService {
   /**
    * Get deliveries by cost range
    */
-  static async getDeliveriesByCostRange(minCost: number, maxCost: number): Promise<ApiResponse<any>> {
+  static async getDeliveriesByCostRange(
+    minCost: number,
+    maxCost: number
+  ): Promise<ApiResponse<any>> {
     try {
       const deliveries = await Delivery.find({
         totalCost: { $gte: minCost, $lte: maxCost },
@@ -299,7 +310,9 @@ export class DeliveryService {
   /**
    * Get deliveries by vehicle ID
    */
-  static async getDeliveriesByVehicle(vehicleId: string): Promise<ApiResponse<any>> {
+  static async getDeliveriesByVehicle(
+    vehicleId: string
+  ): Promise<ApiResponse<any>> {
     try {
       const deliveries = await Delivery.find({
         vehicles: vehicleId,
@@ -327,7 +340,9 @@ export class DeliveryService {
   /**
    * Get deliveries with advanced filtering
    */
-  static async getDeliveriesWithFilters(filters: DeliveryFilters & { page?: number; limit?: number }): Promise<ApiResponse<any>> {
+  static async getDeliveriesWithFilters(
+    filters: DeliveryFilters & { page?: number; limit?: number }
+  ): Promise<ApiResponse<any>> {
     try {
       const {
         startDate,
@@ -335,6 +350,8 @@ export class DeliveryService {
         minCost,
         maxCost,
         vehicleId,
+        minTime,
+        maxTime,
         page = 1,
         limit = 10,
       } = filters;
@@ -361,18 +378,22 @@ export class DeliveryService {
         query.vehicles = vehicleId;
       }
 
+      // Time range filter - filter by estimated delivery time in results
+      if (minTime !== undefined || maxTime !== undefined) {
+        query['results.estimatedDeliveryTime'] = {};
+        if (minTime !== undefined) query['results.estimatedDeliveryTime'].$gte = minTime;
+        if (maxTime !== undefined) query['results.estimatedDeliveryTime'].$lte = maxTime;
+      }
+      console.log(query, "query 270");
       const deliveries = await Delivery.find(query)
         .sort({ createdAt: -1 })
         .skip(skip)
         .limit(limit)
-        .populate({ path: "packages", select: "id weight distance offerCode" })
-        .populate({
-          path: "vehicles",
-          select: "id name maxSpeed maxCarriableWeight availableTime",
-        });
+        .populate({ path: "packages" })
+        .populate({ path: "vehicles" });
 
       const total = await Delivery.countDocuments(query);
-
+      console.log(deliveries, "deliveries 273");
       return {
         success: true,
         data: {

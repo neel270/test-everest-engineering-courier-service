@@ -22,7 +22,7 @@ export const DeliveryCard: React.FC<DeliveryCardProps> = ({ delivery }) => {
       <CardHeader>
         <div className="flex justify-between items-start">
           <div>
-            <CardTitle className="text-lg">Delivery #{delivery.id.slice(-8)}</CardTitle>
+            <CardTitle className="text-lg">Delivery #{delivery._id.slice(-8)}</CardTitle>
             <p className="text-sm text-muted-foreground">Created: {createdDate}</p>
           </div>
           <Badge variant="outline" className="ml-2">
@@ -64,7 +64,7 @@ export const DeliveryCard: React.FC<DeliveryCardProps> = ({ delivery }) => {
 
         <div className="flex gap-2">
           <Button asChild size="sm" className="flex-1">
-            <Link to={`/deliveries/${delivery.id}`}>
+            <Link to={`/deliveries/${delivery._id}`}>
               <Eye className="w-4 h-4 mr-2" />
               View Details
             </Link>

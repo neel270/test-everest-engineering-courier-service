@@ -1,5 +1,5 @@
-import { Request, Response } from 'express';
-import { DeliveryService } from '../services/DeliveryService';
+import { Request, Response } from "express";
+import { DeliveryService } from "../services/DeliveryService";
 
 export class DeliveryController {
   /**
@@ -10,11 +10,15 @@ export class DeliveryController {
       const result = await DeliveryService.calculateDeliveryCosts(req.body);
       res.json(result);
     } catch (error: Error | unknown) {
-      console.error('Calculate delivery costs error:', error);
+      console.error("Calculate delivery costs error:", error);
       res.status(500).json({
         success: false,
-        message: (error as Error).message || 'Failed to calculate delivery costs',
-        error: process.env.NODE_ENV === 'development' ? (error as Error).message : undefined
+        message:
+          (error as Error).message || "Failed to calculate delivery costs",
+        error:
+          process.env.NODE_ENV === "development"
+            ? (error as Error).message
+            : undefined,
       });
     }
   }
@@ -30,11 +34,14 @@ export class DeliveryController {
       const result = await DeliveryService.getDeliveryHistory(page, limit);
       res.json(result);
     } catch (error: Error | unknown) {
-      console.error('Get delivery history error:', error);
+      console.error("Get delivery history error:", error);
       res.status(500).json({
         success: false,
-        message: (error as Error).message || 'Failed to fetch delivery history',
-        error: process.env.NODE_ENV === 'development' ? (error as Error).message : undefined
+        message: (error as Error).message || "Failed to fetch delivery history",
+        error:
+          process.env.NODE_ENV === "development"
+            ? (error as Error).message
+            : undefined,
       });
     }
   }
@@ -48,11 +55,14 @@ export class DeliveryController {
       const result = await DeliveryService.getDeliveryById(id);
       res.json(result);
     } catch (error: Error | unknown) {
-      console.error('Get delivery error:', error);
+      console.error("Get delivery error:", error);
       res.status(500).json({
         success: false,
-        message: (error as Error).message || 'Failed to fetch delivery',
-        error: process.env.NODE_ENV === 'development' ? (error as Error).message : undefined
+        message: (error as Error).message || "Failed to fetch delivery",
+        error:
+          process.env.NODE_ENV === "development"
+            ? (error as Error).message
+            : undefined,
       });
     }
   }
@@ -65,11 +75,15 @@ export class DeliveryController {
       const result = await DeliveryService.getDeliveryStats();
       res.json(result);
     } catch (error: Error | unknown) {
-      console.error('Get delivery stats error:', error);
+      console.error("Get delivery stats error:", error);
       res.status(500).json({
         success: false,
-        message: (error as Error).message || 'Failed to fetch delivery statistics',
-        error: process.env.NODE_ENV === 'development' ? (error as Error).message : undefined
+        message:
+          (error as Error).message || "Failed to fetch delivery statistics",
+        error:
+          process.env.NODE_ENV === "development"
+            ? (error as Error).message
+            : undefined,
       });
     }
   }
@@ -83,11 +97,14 @@ export class DeliveryController {
       const result = await DeliveryService.deleteDelivery(id);
       res.json(result);
     } catch (error: Error | unknown) {
-      console.error('Delete delivery error:', error);
+      console.error("Delete delivery error:", error);
       res.status(500).json({
         success: false,
-        message: (error as Error).message || 'Failed to delete delivery',
-        error: process.env.NODE_ENV === 'development' ? (error as Error).message : undefined
+        message: (error as Error).message || "Failed to delete delivery",
+        error:
+          process.env.NODE_ENV === "development"
+            ? (error as Error).message
+            : undefined,
       });
     }
   }
@@ -102,7 +119,7 @@ export class DeliveryController {
       if (!startDate || !endDate) {
         return res.status(400).json({
           success: false,
-          message: 'startDate and endDate are required'
+          message: "startDate and endDate are required",
         });
       }
 
@@ -112,18 +129,23 @@ export class DeliveryController {
       if (isNaN(start.getTime()) || isNaN(end.getTime())) {
         return res.status(400).json({
           success: false,
-          message: 'Valid startDate and endDate are required'
+          message: "Valid startDate and endDate are required",
         });
       }
 
       const result = await DeliveryService.getDeliveriesByDateRange(start, end);
       res.json(result);
     } catch (error: Error | unknown) {
-      console.error('Get deliveries by date range error:', error);
+      console.error("Get deliveries by date range error:", error);
       res.status(500).json({
         success: false,
-        message: (error as Error).message || 'Failed to fetch deliveries by date range',
-        error: process.env.NODE_ENV === 'development' ? (error as Error).message : undefined
+        message:
+          (error as Error).message ||
+          "Failed to fetch deliveries by date range",
+        error:
+          process.env.NODE_ENV === "development"
+            ? (error as Error).message
+            : undefined,
       });
     }
   }
@@ -140,18 +162,23 @@ export class DeliveryController {
       if (isNaN(min) || isNaN(max)) {
         return res.status(400).json({
           success: false,
-          message: 'Valid minCost and maxCost are required'
+          message: "Valid minCost and maxCost are required",
         });
       }
 
       const result = await DeliveryService.getDeliveriesByCostRange(min, max);
       res.json(result);
     } catch (error: Error | unknown) {
-      console.error('Get deliveries by cost range error:', error);
+      console.error("Get deliveries by cost range error:", error);
       res.status(500).json({
         success: false,
-        message: (error as Error).message || 'Failed to fetch deliveries by cost range',
-        error: process.env.NODE_ENV === 'development' ? (error as Error).message : undefined
+        message:
+          (error as Error).message ||
+          "Failed to fetch deliveries by cost range",
+        error:
+          process.env.NODE_ENV === "development"
+            ? (error as Error).message
+            : undefined,
       });
     }
   }
@@ -166,18 +193,22 @@ export class DeliveryController {
       if (!vehicleId) {
         return res.status(400).json({
           success: false,
-          message: 'Vehicle ID is required'
+          message: "Vehicle ID is required",
         });
       }
 
       const result = await DeliveryService.getDeliveriesByVehicle(vehicleId);
       res.json(result);
     } catch (error: Error | unknown) {
-      console.error('Get deliveries by vehicle error:', error);
+      console.error("Get deliveries by vehicle error:", error);
       res.status(500).json({
         success: false,
-        message: (error as Error).message || 'Failed to fetch deliveries by vehicle',
-        error: process.env.NODE_ENV === 'development' ? (error as Error).message : undefined
+        message:
+          (error as Error).message || "Failed to fetch deliveries by vehicle",
+        error:
+          process.env.NODE_ENV === "development"
+            ? (error as Error).message
+            : undefined,
       });
     }
   }
@@ -187,37 +218,32 @@ export class DeliveryController {
    */
   static async getDeliveriesWithFilters(req: Request, res: Response) {
     try {
-      const {
-        startDate,
-        endDate,
-        minCost,
-        maxCost,
-        vehicleId,
-        page,
-        limit
-      } = req.query;
+      const { startDate, endDate, minCost, maxCost, vehicleId, page, limit, minTime, maxTime } =
+        req.query;
 
       const filters: any = {};
 
-      // Parse date filters
+      // Parse date filters - keep as ISO strings for MongoDB compatibility
       if (startDate) {
-        filters.startDate = new Date(startDate as string);
-        if (isNaN(filters.startDate.getTime())) {
+        const start = new Date(startDate as string);
+        if (isNaN(start.getTime())) {
           return res.status(400).json({
             success: false,
-            message: 'Valid startDate is required'
+            message: "Valid startDate is required",
           });
         }
+        filters.startDate = start.toISOString();
       }
 
       if (endDate) {
-        filters.endDate = new Date(endDate as string);
-        if (isNaN(filters.endDate.getTime())) {
+        const end = new Date(endDate as string);
+        if (isNaN(end.getTime())) {
           return res.status(400).json({
             success: false,
-            message: 'Valid endDate is required'
+            message: "Valid endDate is required",
           });
         }
+        filters.endDate = end.toISOString();
       }
 
       // Parse cost filters
@@ -226,7 +252,7 @@ export class DeliveryController {
         if (isNaN(filters.minCost)) {
           return res.status(400).json({
             success: false,
-            message: 'Valid minCost is required'
+            message: "Valid minCost is required",
           });
         }
       }
@@ -236,7 +262,7 @@ export class DeliveryController {
         if (isNaN(filters.maxCost)) {
           return res.status(400).json({
             success: false,
-            message: 'Valid maxCost is required'
+            message: "Valid maxCost is required",
           });
         }
       }
@@ -246,6 +272,27 @@ export class DeliveryController {
         filters.vehicleId = vehicleId as string;
       }
 
+      // Time range filter
+      if (minTime !== undefined) {
+        filters.minTime = parseFloat(minTime as string);
+        if (isNaN(filters.minTime)) {
+          return res.status(400).json({
+            success: false,
+            message: "Valid minTime is required",
+          });
+        }
+      }
+
+      if (maxTime !== undefined) {
+        filters.maxTime = parseFloat(maxTime as string);
+        if (isNaN(filters.maxTime)) {
+          return res.status(400).json({
+            success: false,
+            message: "Valid maxTime is required",
+          });
+        }
+      }
+
       // Pagination
       if (page) {
         filters.page = parseInt(page as string);
@@ -253,15 +300,19 @@ export class DeliveryController {
       if (limit) {
         filters.limit = parseInt(limit as string);
       }
-
+      console.log(filters, "filters 512");
       const result = await DeliveryService.getDeliveriesWithFilters(filters);
       res.json(result);
     } catch (error: Error | unknown) {
-      console.error('Get deliveries with filters error:', error);
+      console.error("Get deliveries with filters error:", error);
       res.status(500).json({
         success: false,
-        message: (error as Error).message || 'Failed to fetch deliveries with filters',
-        error: process.env.NODE_ENV === 'development' ? (error as Error).message : undefined
+        message:
+          (error as Error).message || "Failed to fetch deliveries with filters",
+        error:
+          process.env.NODE_ENV === "development"
+            ? (error as Error).message
+            : undefined,
       });
     }
   }

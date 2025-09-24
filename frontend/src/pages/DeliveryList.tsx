@@ -31,31 +31,31 @@ const DeliveryList: React.FC = () => {
     minCost: undefined as number | undefined,
     maxCost: undefined as number | undefined,
     vehicleId: undefined as string | undefined,
+    minTime: undefined as number | undefined,
+    maxTime: undefined as number | undefined,
   });
 
   const [showFilters, setShowFilters] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 12;
 
-  const { data, isLoading, error, refetch } = useQuery({
+  const { data, isLoading, error, refetch } = useQuery<PaginatedDeliveriesResponse>({
     queryKey: ["deliveries", filters, currentPage, itemsPerPage],
     queryFn: async () => {
       // If no filters are applied, use the regular history endpoint
       if (!filters.startDate && !filters.endDate && !filters.minCost && !filters.maxCost && !filters.vehicleId) {
-        const response = await deliveryApi.getDeliveryHistory({
+        return await deliveryApi.getDeliveryHistory({
           page: currentPage,
           limit: itemsPerPage
         });
-        return response.data;
       }
 
       // Use the advanced filtering endpoint
-      const response = await deliveryApi.getDeliveriesWithFilters({
+      return await deliveryApi.getDeliveriesWithFilters({
         ...filters,
         page: currentPage,
         limit: itemsPerPage
       });
-      return response.data;
     },
   });
 
@@ -75,6 +75,8 @@ const DeliveryList: React.FC = () => {
       minCost: undefined,
       maxCost: undefined,
       vehicleId: undefined,
+      minTime: undefined,
+      maxTime: undefined,
     });
     setCurrentPage(1); // Reset to first page when clearing filters
     refetch();
@@ -130,10 +132,8 @@ const DeliveryList: React.FC = () => {
       </div>
     );
   }
-
-  const deliveries = (data as PaginatedDeliveriesResponse)?.data?.data?.items || [];
-  const pagination = (data as PaginatedDeliveriesResponse)?.data?.data?.pagination;
-
+  const deliveries = data?.data?.items || [];
+  const pagination = data?.data?.pagination;
   // Helper function to get total count from pagination
   const getTotalCount = () => {
     if (!pagination) return 0;
@@ -194,7 +194,7 @@ const DeliveryList: React.FC = () => {
         <>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {deliveries.map((delivery: DeliveryResponse) => (
-              <DeliveryCard key={delivery.id} delivery={delivery} />
+              <DeliveryCard key={delivery._id} delivery={delivery} />
             ))}
           </div>
 

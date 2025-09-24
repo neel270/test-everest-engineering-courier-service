@@ -23,7 +23,10 @@ export type PaginatedVehiclesResponse = ApiResponse<PaginatedResponse<VehicleRes
 
 export type DeliveryApiResponse = ApiResponse<DeliveryResponse>;
 export type DeliveriesApiResponse = ApiResponse<DeliveryResponse[]>;
-export type PaginatedDeliveriesResponse = ApiResponse<PaginatedResponse<DeliveryResponse>>;
+export type PaginatedDeliveriesResponse = ApiResponse<{
+  items: DeliveryResponse[];
+  pagination: PaginationInfo;
+}>;
 export type DeliveryStatsResponse = ApiResponse<DeliveryStats>;
 
 // Request/Response types for each endpoint
