@@ -66,7 +66,7 @@ export function Step2Card({ step }: Step2CardProps) {
           <div className="p-2 bg-white/20 rounded-full">
             <Target className="w-6 h-6" />
           </div>
-          Step 2: Package Selection & Weight Analysis
+          Step 2: Advanced Package Selection & Comprehensive Weight Analysis
           <div className="p-2 bg-white/20 rounded-full">
             <Weight className="w-6 h-6" />
           </div>
@@ -110,7 +110,7 @@ export function Step2Card({ step }: Step2CardProps) {
           <div className="bg-white/80 backdrop-blur-sm rounded-xl p-4 border border-yellow-200">
             <h3 className="text-lg font-bold text-yellow-800 mb-4 flex items-center gap-2">
               <div className="w-2 h-2 bg-yellow-500 rounded-full animate-pulse"></div>
-              Package Selection Analysis
+              Intelligent Package Selection Analysis & Weight Distribution Strategy
             </h3>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -208,7 +208,7 @@ export function Step2Card({ step }: Step2CardProps) {
             <div className="bg-white/80 backdrop-blur-sm rounded-xl p-4 border border-amber-200">
               <h3 className="text-lg font-bold text-amber-800 mb-4 flex items-center gap-2">
                 <div className="w-2 h-2 bg-amber-500 rounded-full animate-pulse"></div>
-                Vehicle Assignment Details
+                Comprehensive Vehicle Assignment & Route Optimization Details
               </h3>
 
               <div className="space-y-4">
@@ -300,7 +300,7 @@ export function Step2Card({ step }: Step2CardProps) {
               <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl p-4 border border-green-200">
                 <h3 className="text-lg font-bold text-green-800 mb-4 flex items-center gap-2">
                   <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                  Cross-Vehicle Analysis
+                  Advanced Cross-Vehicle Analysis & Fleet Optimization Metrics
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div className="text-center p-3 bg-white rounded-lg border border-green-200">

@@ -15,7 +15,10 @@
     "build:frontend": "npm run build --workspace=frontend",
     "build:backend": "npm run build --workspace=backend",
     "lint": "npm run lint --workspaces",
-    "test": "npm run test --workspaces"
+    "test": "npm run test --workspaces",
+    "cli": "node frontend/src/cli/delivery-cli.ts",
+    "cli:interactive": "node frontend/src/cli/delivery-cli.ts",
+    "cli:file": "node frontend/src/cli/delivery-cli.ts"
   },
   "devDependencies": {
     "concurrently": "^8.2.2"

@@ -317,6 +317,91 @@ npm run lint             # Lint TypeScript files
 npm run test-db          # Test database connection
 ```
 
+## 🖥️ Command Line Interface (CLI)
+
+The application includes a powerful CLI tool for delivery calculations with full backend integration.
+
+### CLI Features
+- **Backend Integration**: Fetches vehicle data from backend API (same as frontend)
+- **Database Storage**: All calculations stored in MongoDB with proper relationships
+- **Step-by-Step Process**: Detailed optimization steps and calculations
+- **Multiple Input Methods**: Interactive, file input, or stdin support
+
+### CLI Usage
+
+#### Interactive Mode
+```bash
+npm run cli
+```
+
+#### File Input
+```bash
+# Read from file
+npm run cli input.txt
+
+# Read from file and write to output
+npm run cli input.txt output.txt
+```
+
+#### Stdin Input
+```bash
+# Pipe data from another command
+cat input.txt | npm run cli
+
+# Or use echo for simple input
+echo "100 3
+PKG1 5 5 OFR001
+PKG2 15 5 OFR002
+PKG3 10 100 OFR003" | npm run cli
+```
+
+### CLI Input Format
+```
+base_delivery_cost no_of_packages
+pkg_id1 pkg_weight1_in_kg distance1_in_km offer_code1
+pkg_id2 pkg_weight2_in_kg distance2_in_km offer_code2
+...
+pkg_idN pkg_weightN_in_kg distanceN_in_km offer_codeN
+```
+
+**Note**: Vehicle data is automatically fetched from the backend API - no need to include it in input files.
+
+### CLI Output Format
+```
+pkg_id1 discount1 total_cost1 estimated_delivery_time1
+pkg_id2 discount2 total_cost2 estimated_delivery_time2
+...
+pkg_idN discountN total_costN estimated_delivery_timeN
+```
+
+### CLI Example
+**Input File (`delivery-input.txt`):**
+```
+100 3
+PKG1 5 5 OFR001
+PKG2 15 5 OFR002
+PKG3 10 100 OFR003
+```
+
+**Usage:**
+```bash
+npm run cli delivery-input.txt
+```
+
+**Output:**
+```
+PKG1 0 175 3.98
+PKG2 0 275 1.78
+PKG3 35 665 1.42
+```
+
+### CLI Backend Integration
+- ✅ **Vehicle Data**: Fetched from `/api/vehicles` endpoint (same as frontend)
+- ✅ **Database Storage**: All calculations saved with proper relationships
+- ✅ **Real-time Data**: Uses current vehicle information from database
+- ✅ **Optimization Steps**: Shows detailed backend optimization process
+- ✅ **Error Handling**: Comprehensive error reporting and validation
+
 ## 🧪 Testing
 
 ### Database Testing

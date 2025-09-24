@@ -45,7 +45,7 @@ export function Step3Card({ step }: Step3CardProps) {
           <div className="p-2 bg-white/20 rounded-full">
             <Timer className="w-6 h-6" />
           </div>
-          Step 3: Vehicle Availability & Scheduling
+          Step 3: Intelligent Vehicle Availability & Advanced Scheduling System
           <div className="p-2 bg-white/20 rounded-full">
             <Clock className="w-6 h-6" />
           </div>
@@ -89,7 +89,7 @@ export function Step3Card({ step }: Step3CardProps) {
           <div className="bg-white/80 backdrop-blur-sm rounded-xl p-4 border border-purple-200">
             <h3 className="text-lg font-bold text-purple-800 mb-4 flex items-center gap-2">
               <div className="w-2 h-2 bg-purple-500 rounded-full animate-pulse"></div>
-              Vehicle Return Schedule
+              Comprehensive Vehicle Return Schedule & Availability Tracking
             </h3>
 
             {rows.length > 0 ? (
@@ -257,7 +257,7 @@ export function Step3Card({ step }: Step3CardProps) {
           <div className="bg-gradient-to-r from-blue-50 to-cyan-50 rounded-xl p-4 border border-blue-200">
             <h3 className="text-lg font-bold text-blue-800 mb-4 flex items-center gap-2">
               <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
-              Fleet Status Summary
+              Comprehensive Fleet Status Summary & Operational Intelligence
             </h3>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <div className="text-center p-3 bg-white rounded-lg border border-blue-200">

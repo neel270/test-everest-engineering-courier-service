@@ -96,7 +96,7 @@ export function Step6Card({ step }: Step6CardProps) {
           <div className="p-2 bg-white/20 rounded-full">
             <Target className="w-6 h-6" />
           </div>
-          Step 6: Final Package Assignment
+          Step 6: Final Package Assignment & Route Optimization Completion
           <div className="p-2 bg-white/20 rounded-full">
             <Route className="w-6 h-6" />
           </div>
@@ -140,7 +140,7 @@ export function Step6Card({ step }: Step6CardProps) {
           <div className="bg-white/80 backdrop-blur-sm rounded-xl p-4 border border-cyan-200">
             <h3 className="text-lg font-bold text-cyan-800 mb-4 flex items-center gap-2">
               <div className="w-2 h-2 bg-cyan-500 rounded-full animate-pulse"></div>
-              Remaining Package Assignment
+              Remaining Package Assignment & Final Optimization Strategy
             </h3>
 
             {/* Show unassigned packages */}
@@ -237,7 +237,7 @@ export function Step6Card({ step }: Step6CardProps) {
           <div className="bg-white/80 backdrop-blur-sm rounded-xl p-4 border border-green-200">
             <h3 className="text-lg font-bold text-green-800 mb-4 flex items-center gap-2">
               <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-              Vehicle Assignment Details
+              Comprehensive Vehicle Assignment Details & Route Analysis
             </h3>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -301,7 +301,7 @@ export function Step6Card({ step }: Step6CardProps) {
           <div className="bg-white/80 backdrop-blur-sm rounded-xl p-4 border border-purple-200">
             <h3 className="text-lg font-bold text-purple-800 mb-4 flex items-center gap-2">
               <div className="w-2 h-2 bg-purple-500 rounded-full animate-pulse"></div>
-              Assignment Timeline
+              Comprehensive Assignment Timeline & Execution Schedule
             </h3>
 
             <div className="space-y-4">
@@ -352,7 +352,7 @@ export function Step6Card({ step }: Step6CardProps) {
           <div className="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-xl p-4 border border-indigo-200">
             <h3 className="text-lg font-bold text-indigo-800 mb-4 flex items-center gap-2">
               <div className="w-2 h-2 bg-indigo-500 rounded-full animate-pulse"></div>
-              Assignment Summary
+              Comprehensive Assignment Summary & Performance Metrics
             </h3>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <div className="text-center p-3 bg-white rounded-lg border border-indigo-200">

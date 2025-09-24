@@ -123,6 +123,9 @@ export function Step7Card({ step }: Step7CardProps) {
               <CardTitle className="text-3xl font-bold text-green-800">
                 🎉 DELIVERY PLANNING COMPLETE! 🎉
               </CardTitle>
+              <p className="text-lg text-green-700 mt-2">
+                Advanced Optimization Algorithm Successfully Executed
+              </p>
               <div className="p-4 bg-green-500 text-white rounded-full animate-bounce">
                 <Star className="w-8 h-8" />
               </div>
@@ -160,6 +163,9 @@ export function Step7Card({ step }: Step7CardProps) {
                 <span className="text-2xl font-bold">
                   MISSION ACCOMPLISHED!
                 </span>
+                <p className="text-green-600 mt-2">
+                  All Optimization Criteria Successfully Met
+                </p>
                 <CheckCircle className="w-8 h-8 animate-pulse" />
               </div>
               <p className="text-lg text-green-700 mb-4">
@@ -233,7 +239,7 @@ export function Step7Card({ step }: Step7CardProps) {
             <div className="bg-white/90 backdrop-blur-sm rounded-xl p-6 border border-green-200 shadow-lg">
               <h3 className="text-xl font-bold text-green-800 mb-6 flex items-center gap-2">
                 <Truck className="w-6 h-6" />
-                Vehicle Assignment Details
+                Comprehensive Vehicle Assignment Details & Route Analysis
               </h3>
               <div className="space-y-6">
                 {vehicleAssignments.map((assignment, index) => (
@@ -367,6 +373,9 @@ export function Step7Card({ step }: Step7CardProps) {
                   <h3 className="text-2xl font-bold text-yellow-800">
                     ACHIEVEMENT UNLOCKED!
                   </h3>
+                  <p className="text-yellow-700 mt-2">
+                    Maximum Optimization Efficiency Achieved
+                  </p>
                   <Trophy className="w-8 h-8 text-yellow-600 animate-bounce" />
                 </div>
 

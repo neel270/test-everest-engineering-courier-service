@@ -2217,173 +2217,7 @@ export class DeliveryService {
   //   return { packages: bestShipment };
   // }
 
-  // private generateStepDescription(
-  //   packages: PackageData[],
-  //   vehicle: Vehicle,
-  //   maxDistance: number,
-  //   deliveryTime: number,
-  //   returnTime: number
-  // ): string {
-  //   const packageIds = packages.map((pkg) => pkg.id).join(" + ");
 
-  //   let description = `Vehicle ${String(vehicle.id).padStart(
-  //     2,
-  //     "0"
-  //   )} Delivering ${packageIds} ${DeliveryService.formatTime(deliveryTime)}\n`;
-  //   description += `           ${maxDistance}km/${vehicle.maxSpeed}km/hr\n\n`;
-
-  //   // Show multiple deliveries if there are multiple packages
-  //   if (packages.length > 1) {
-  //     packages.forEach((pkg) => {
-  //       const pkgDeliveryTime = pkg.distance / vehicle.maxSpeed;
-  //       description += `           Delivering ${
-  //         pkg.id
-  //       } ${DeliveryService.formatTime(pkgDeliveryTime)}\n`;
-  //       description += `           ${pkg.distance}/${vehicle.maxSpeed}km/hr\n\n`;
-  //     });
-  //   }
-
-  //   description += `Vehicle ${String(vehicle.id).padStart(
-  //     2,
-  //     "0"
-  //   )} will be available after (2*${deliveryTime.toFixed(
-  //     2
-  //   )}) ${returnTime.toFixed(2)}\n`;
-
-  //   return description;
-  // }
-
-  // private generateAvailabilityStep(
-  //   step: number,
-  //   remainingPackages: PackageData[],
-  //   availableVehicles: Vehicle[],
-  //   currentTime: number,
-  //   prevAssignments: OptimizationStep["vehicleAssignments"]
-  // ): OptimizationStep {
-  //   const nextAvailableTime = Math.min(
-  //     ...(prevAssignments?.map((v) => v.availableAfter) || [])
-  //   );
-  //   const nextAvailableVehicle = prevAssignments?.find(
-  //     (v) => v.availableAfter === nextAvailableTime
-  //   );
-  //   let description = `STEP ${String(step).padStart(
-  //     2,
-  //     "0"
-  //   )}: Waiting for Vehicles to Return\n`;
-  //   // Packages line with details
-  //   const pkgList = remainingPackages
-  //     .map((p) => `${p.id} (${p.weight} kg)`)
-  //     .join(", ");
-  //   description += `Packages Remaining: ${remainingPackages.length}${
-  //     pkgList ? ` → ${pkgList}` : ""
-  //   }\n`;
-  //   description += `Vehicles Available: 0\n`;
-  //   description += `Current Time: ${currentTime.toFixed(0)} hrs\n`;
-
-  //   // If we have prior assignments (from steps 1 and 2), show them explicitly with return times
-  //   if (prevAssignments && prevAssignments.length > 0) {
-  //     description += `Assigned vehicles so far (from previous steps):\n`;
-  //     prevAssignments
-  //       .slice()
-  //       .sort((a, b) => a.availableAfter - b.availableAfter)
-  //       .forEach((a) => {
-  //         const v = availableVehicles.find((vv) => vv.id === a.vehicleId);
-  //         const vName =
-  //           v?.name || `Vehicle ${String(a.vehicleId).padStart(2, "0")}`;
-  //         description += `  ${vName} → returns at t=${a.availableAfter.toFixed(
-  //           2
-  //         )} hrs (round trip ${a.returnTime.toFixed(2)} hrs)\n`;
-  //       });
-  //     const firstPrev = [...prevAssignments].sort(
-  //       (a, b) => a.availableAfter - b.availableAfter
-  //     )[0];
-  //     if (firstPrev) {
-  //       const v = availableVehicles.find((vv) => vv.id === firstPrev.vehicleId);
-  //       const vName =
-  //         v?.name || `Vehicle ${String(firstPrev.vehicleId).padStart(2, "0")}`;
-  //       description += `First to return (from previous assignments): ${vName} at t=${firstPrev.availableAfter.toFixed(
-  //         2
-  //       )} hrs\n`;
-  //     }
-  //     description += `---------------------------------------------\n`;
-  //   }
-
-  //   // Show returning status for all vehicles
-  //   availableVehicles
-  //     .sort((a, b) => a.id - b.id)
-  //     .forEach((v) => {
-  //       const returningIn = Math.max(0, v.availableTime - currentTime);
-  //       const vName = v.name || `Vehicle ${String(v.id).padStart(2, "0")}`;
-  //       description += `${vName} returning in ${returningIn.toFixed(2)} hrs\n`;
-  //     });
-
-  //   description += `---------------------------------------------\n`;
-  //   if (nextAvailableVehicle) {
-  //     const delta = Math.max(
-  //       0,
-  //       nextAvailableVehicle.availableAfter - currentTime
-  //     );
-  //     // Logic lines to match requested format
-  //     description += `Logic: Next delivery can only start when a vehicle becomes available.\n`;
-  //     description += `   ${
-  //       nextAvailableVehicle.name ||
-  //       `Vehicle ${String(nextAvailableVehicle.vehicleId).padStart(2, "0")}`
-  //     } returns first → available at Current Time + ${delta.toFixed(
-  //       2
-  //     )} = ${delta.toFixed(
-  //       2
-  //     )} hrs (time ${nextAvailableVehicle.availableAfter.toFixed(2)} hrs)\n`;
-  //   }
-
-  //   return {
-  //     step: step,
-  //     description: description,
-  //     packagesRemaining: remainingPackages.length,
-  //     vehiclesAvailable: 0,
-  //     currentTime:
-  //       step == 3 ? 0 : nextAvailableVehicle?.availableAfter || currentTime,
-  //     vehicleAssignments: [],
-  //     unassignedPackages: [...remainingPackages],
-  //     assignedPackages: [],
-  //     prevAssignments: prevAssignments
-  //       ?.sort((a, b) => a.vehicleId - b.vehicleId)
-  //       .map((v) => ({
-  //         vehicleId: v.vehicleId, // Always show by vehicle ID to avoid empty/undefined names
-  //         name: v.name || `Vehicle ${String(v.vehicleId).padStart(2, "0")}`,
-  //         returningIn: Math.max(0, v.availableAfter),
-  //       })),
-  //     availability: {
-  //       vehicleReturns: prevAssignments
-  //         ?.sort((a, b) => a.vehicleId - b.vehicleId)
-  //         .map((v) => ({
-  //           vehicleId: v.vehicleId,
-  //           // Always show by vehicle ID to avoid empty/undefined names
-  //           name: v.name || `Vehicle ${String(v.vehicleId).padStart(2, "0")}`,
-  //           returningIn: Math.max(0, v.availableAfter),
-  //         })),
-  //       firstAvailable: nextAvailableVehicle
-  //         ? {
-  //             ...nextAvailableVehicle,
-  //             vehicleId: nextAvailableVehicle.vehicleId,
-  //             name:
-  //               nextAvailableVehicle.name ||
-  //               `Vehicle ${String(nextAvailableVehicle.vehicleId).padStart(
-  //                 2,
-  //                 "0"
-  //               )}`,
-  //             delta: Math.max(0, nextAvailableVehicle.availableAfter),
-  //             expression: `(Current Time (${Math.max(
-  //               0,
-  //               nextAvailableVehicle.availableAfter
-  //             ).toFixed(2)}) + ${Math.max(
-  //               0,
-  //               nextAvailableVehicle.availableAfter
-  //             ).toFixed(2)})`,
-  //           }
-  //         : undefined,
-  //     },
-  //   };
-  // }
 
   // private generatePlanningStep(
   //   step: number,
@@ -2754,19 +2588,13 @@ export class DeliveryService {
     const pkg4 = remainingPackages.find((p) => p.id === "PKG4");
 
     if (pkg1 && pkg2) {
-      stepDescription += `PKG1 + PKG2 = ${pkg1.weight} + ${pkg2.weight} = ${
-        pkg1.weight + pkg2.weight
-      } kg\n`;
+      stepDescription += `PKG1 + PKG2 = ${pkg1.weight} + ${pkg2.weight} = ${pkg1.weight + pkg2.weight} kg\n`;
     }
     if (pkg1 && pkg4) {
-      stepDescription += `PKG1 + PKG4 = ${pkg1.weight} + ${pkg4.weight} = ${
-        pkg1.weight + pkg4.weight
-      } kg\n`;
+      stepDescription += `PKG1 + PKG4 = ${pkg1.weight} + ${pkg4.weight} = ${pkg1.weight + pkg4.weight} kg\n`;
     }
     if (pkg2 && pkg4) {
-      stepDescription += `PKG2 + PKG4 = ${pkg2.weight} + ${pkg4.weight} = ${
-        pkg2.weight + pkg4.weight
-      } kg\n`;
+      stepDescription += `PKG2 + PKG4 = ${pkg2.weight} + ${pkg4.weight} = ${pkg2.weight + pkg4.weight} kg\n`;
     }
 
     stepDescription += `\nLogic: Combine packages to maximize weight without exceeding vehicle capacity (assuming a vehicle can carry multiple packages).\n\n`;

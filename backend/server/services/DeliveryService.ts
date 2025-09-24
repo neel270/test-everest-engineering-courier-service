@@ -1,6 +1,4 @@
 import Delivery from "../models/Delivery";
-import VehicleModel from "../models/Vehicle";
-import PackageModel from "../models/Package";
 import {
   DeliveryService as SharedDeliveryService,
   DeliveryResult,
@@ -10,15 +8,42 @@ import {
   DeliveryFilters,
   ApiResponse,
 } from "../types";
+import { DeliveryRepository } from "../repositories/DeliveryRepository";
+import { PackageRepository } from "../repositories/PackageRepository";
+import { VehicleRepository } from "../repositories/VehicleRepository";
+import { DIContainer } from "../core/DIContainer";
+import { EventManager, DeliveryEvents } from "../events/EventManager";
+import { LoggingDecorator, ValidationDecorator, RetryDecorator } from "../decorators/ServiceDecorators";
 
 export class DeliveryService {
+  private static deliveryRepository: DeliveryRepository;
+  private static packageRepository: PackageRepository;
+  private static vehicleRepository: VehicleRepository;
+  private static eventManager: EventManager;
+
+  private static initializeDependencies() {
+    if (!this.deliveryRepository) {
+      const container = DIContainer.getInstance();
+      this.deliveryRepository = container.resolve('deliveryRepository');
+      this.packageRepository = container.resolve('packageRepository');
+      this.vehicleRepository = container.resolve('vehicleRepository');
+      this.eventManager = EventManager.getInstance();
+    }
+  }
+
   /**
-   * Calculate delivery costs and save to database
-   */
+    * Calculate delivery costs and save to database using Repository Pattern
+    */
+  @LoggingDecorator.logMethodCall
+  @ValidationDecorator.validateInput
+  @RetryDecorator.withRetry(3, 1000)
   static async calculateDeliveryCosts(
     deliveryData: DeliveryCalculationRequest
   ): Promise<ApiResponse<any>> {
     try {
+      // Initialize dependencies if not already done
+      this.initializeDependencies();
+
       const { packages, vehicles, baseDeliveryCost } = deliveryData;
 
       // Validate input
@@ -27,6 +52,13 @@ export class DeliveryService {
           "Packages, vehicles, and base delivery cost are required"
         );
       }
+
+      // Emit calculation started event
+      this.eventManager.emit(DeliveryEvents.CALCULATION_STARTED, {
+        packageCount: packages.length,
+        vehicleCount: vehicles.length,
+        baseCost: baseDeliveryCost,
+      });
 
       // Create delivery service instance
       const deliveryService = new SharedDeliveryService(baseDeliveryCost);
@@ -47,7 +79,7 @@ export class DeliveryService {
         packages,
         vehiclesWithAvailability
       );
-      console.log(updatedVehicles, "updatedVehicles 45");
+
       // Calculate totals
       const totalCost = results.reduce(
         (sum: number, result: DeliveryResult) => sum + result.totalCost,
@@ -58,35 +90,9 @@ export class DeliveryService {
         0
       );
 
-      // Upsert Packages and Vehicles, then store references on Delivery
-      const packageDocs = await Promise.all(
-        packages.map(async (pkg) =>
-          PackageModel.findOneAndUpdate(
-            { id: pkg.id },
-            {
-              id: pkg.id,
-              weight: pkg.weight,
-              distance: pkg.distance,
-              offerCode: pkg.offerCode || "",
-            },
-            { upsert: true, new: true, setDefaultsOnInsert: true }
-          )
-        )
-      );
-      const vehicleDocs = await Promise.all(
-        updatedVehicles.map(async (veh) =>
-          VehicleModel.findOneAndUpdate(
-            { id: veh.id },
-            {
-              id: veh.id,
-              maxSpeed: veh.maxSpeed,
-              maxCarriableWeight: veh.maxCarriableWeight,
-              availableTime: veh.availableTime ?? 0,
-            },
-            { upsert: true, new: true, setDefaultsOnInsert: true }
-          )
-        )
-      );
+      // Upsert Packages and Vehicles using Repository Pattern
+      const packageDocs = await this.packageRepository.upsertMultiplePackages(packages);
+      const vehicleDocs = await this.vehicleRepository.upsertMultipleVehicles(updatedVehicles);
 
       const delivery = new Delivery({
         packages: packageDocs.map((d) => d._id),
@@ -99,6 +105,15 @@ export class DeliveryService {
       });
 
       await delivery.save();
+
+      // Emit delivery calculated event
+      this.eventManager.emit(DeliveryEvents.DELIVERY_CALCULATED, {
+        deliveryId: delivery._id,
+        totalCost,
+        totalDiscount,
+        totalPackages: packages.length,
+        totalVehicles: updatedVehicles.length,
+      });
 
       return {
         success: true,
@@ -384,7 +399,6 @@ export class DeliveryService {
         if (minTime !== undefined) query['results.estimatedDeliveryTime'].$gte = minTime;
         if (maxTime !== undefined) query['results.estimatedDeliveryTime'].$lte = maxTime;
       }
-      console.log(query, "query 270");
       const deliveries = await Delivery.find(query)
         .sort({ createdAt: -1 })
         .skip(skip)
@@ -393,7 +407,6 @@ export class DeliveryService {
         .populate({ path: "vehicles" });
 
       const total = await Delivery.countDocuments(query);
-      console.log(deliveries, "deliveries 273");
       return {
         success: true,
         data: {

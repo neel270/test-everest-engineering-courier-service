@@ -221,7 +221,17 @@ export class DeliveryController {
       const { startDate, endDate, minCost, maxCost, vehicleId, page, limit, minTime, maxTime } =
         req.query;
 
-      const filters: any = {};
+      const filters: {
+        startDate?: Date;
+        endDate?: Date;
+        minCost?: number;
+        maxCost?: number;
+        vehicleId?: string;
+        minTime?: number;
+        maxTime?: number;
+        page?: number;
+        limit?: number;
+      } = {};
 
       // Parse date filters - keep as ISO strings for MongoDB compatibility
       if (startDate) {
@@ -232,7 +242,7 @@ export class DeliveryController {
             message: "Valid startDate is required",
           });
         }
-        filters.startDate = start.toISOString();
+        filters.startDate = start;
       }
 
       if (endDate) {
@@ -243,7 +253,7 @@ export class DeliveryController {
             message: "Valid endDate is required",
           });
         }
-        filters.endDate = end.toISOString();
+        filters.endDate = end;
       }
 
       // Parse cost filters
@@ -300,7 +310,6 @@ export class DeliveryController {
       if (limit) {
         filters.limit = parseInt(limit as string);
       }
-      console.log(filters, "filters 512");
       const result = await DeliveryService.getDeliveriesWithFilters(filters);
       res.json(result);
     } catch (error: Error | unknown) {

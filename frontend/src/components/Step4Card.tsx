@@ -55,7 +55,7 @@ export function Step4Card({ step }: Step4CardProps) {
           <div className="p-2 bg-white/20 rounded-full">
             <Target className="w-6 h-6" />
           </div>
-          Step 4: Package-to-Vehicle Assignment
+          Step 4: Intelligent Package-to-Vehicle Assignment & Route Optimization
           <div className="p-2 bg-white/20 rounded-full">
             <Route className="w-6 h-6" />
           </div>
@@ -102,7 +102,7 @@ export function Step4Card({ step }: Step4CardProps) {
           <div className="bg-white/80 backdrop-blur-sm rounded-xl p-4 border border-orange-200">
             <h3 className="text-lg font-bold text-orange-800 mb-4 flex items-center gap-2">
               <div className="w-2 h-2 bg-orange-500 rounded-full animate-pulse"></div>
-              Package Selection Analysis
+              Advanced Package Selection Analysis & Optimization Strategy
             </h3>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -231,7 +231,7 @@ export function Step4Card({ step }: Step4CardProps) {
           <div className="bg-white/80 backdrop-blur-sm rounded-xl p-4 border border-red-200">
             <h3 className="text-lg font-bold text-red-800 mb-4 flex items-center gap-2">
               <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
-              Assignment Flow
+              Intelligent Assignment Flow & Route Planning Visualization
             </h3>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-center">
@@ -276,7 +276,7 @@ export function Step4Card({ step }: Step4CardProps) {
           <div className="bg-white/80 backdrop-blur-sm rounded-xl p-4 border border-green-200">
             <h3 className="text-lg font-bold text-green-800 mb-4 flex items-center gap-2">
               <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-              Assignment Details
+              Comprehensive Assignment Details & Route Optimization Analysis
             </h3>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -358,7 +358,7 @@ export function Step4Card({ step }: Step4CardProps) {
           <div className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl p-4 border border-purple-200">
             <h3 className="text-lg font-bold text-purple-800 mb-4 flex items-center gap-2">
               <div className="w-2 h-2 bg-purple-500 rounded-full animate-pulse"></div>
-              Assignment Summary
+              Comprehensive Assignment Summary & Performance Metrics
             </h3>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <div className="text-center p-3 bg-white rounded-lg border border-purple-200">

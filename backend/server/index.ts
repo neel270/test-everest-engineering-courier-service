@@ -5,6 +5,7 @@ import morgan from 'morgan';
 import dotenv from 'dotenv';
 import rateLimit from 'express-rate-limit';
 import connectDB from './config/database';
+import { Application } from './core/Application';
 
 // Import routes
 import authRoutes from './routes/auth';
@@ -20,6 +21,16 @@ const PORT = process.env.PORT || 5000;
 
 // Connect to MongoDB
 connectDB();
+
+// Initialize application services
+(async () => {
+  try {
+    await Application.getInstance().initialize();
+  } catch (error) {
+    console.error('Failed to initialize application:', error);
+    process.exit(1);
+  }
+})();
 
 // Security middleware
 app.use(helmet());

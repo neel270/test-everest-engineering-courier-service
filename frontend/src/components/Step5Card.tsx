@@ -74,7 +74,7 @@ export function Step5Card({ step }: Step5CardProps) {
           <div className="p-2 bg-white/20 rounded-full">
             <Timer className="w-6 h-6" />
           </div>
-          Step 5: Fleet Availability Status
+          Step 5: Comprehensive Fleet Availability Status & Real-time Monitoring
           <div className="p-2 bg-white/20 rounded-full">
             <CheckCircle className="w-6 h-6" />
           </div>
@@ -121,7 +121,7 @@ export function Step5Card({ step }: Step5CardProps) {
           <div className="bg-white/80 backdrop-blur-sm rounded-xl p-4 border border-emerald-200">
             <h3 className="text-lg font-bold text-emerald-800 mb-4 flex items-center gap-2">
               <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
-              Fleet Status Overview
+              Comprehensive Fleet Status Overview & Operational Intelligence
             </h3>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
@@ -155,7 +155,7 @@ export function Step5Card({ step }: Step5CardProps) {
             <div className="bg-white/80 backdrop-blur-sm rounded-xl p-4 border border-blue-200">
               <h3 className="text-lg font-bold text-blue-800 mb-4 flex items-center gap-2">
                 <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
-                Vehicles Returning to Base
+                Vehicles Returning to Base & Real-time Status Tracking
               </h3>
 
               <div className="space-y-3">
@@ -368,7 +368,7 @@ export function Step5Card({ step }: Step5CardProps) {
           <div className="bg-gradient-to-r from-purple-50 to-indigo-50 rounded-xl p-4 border border-purple-200">
             <h3 className="text-lg font-bold text-purple-800 mb-4 flex items-center gap-2">
               <div className="w-2 h-2 bg-purple-500 rounded-full animate-pulse"></div>
-              Fleet Summary & Recommendations
+              Comprehensive Fleet Summary & Intelligent Recommendations
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="bg-white rounded-lg p-4 border border-purple-200">

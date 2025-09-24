@@ -37,7 +37,7 @@ export function Step1Card({ step }: Step1CardProps) {
           <div className="p-2 bg-white/20 rounded-full">
             <Package className="w-6 h-6" />
           </div>
-          Step 1: Package Selection & Optimization
+          Step 1: Intelligent Package Selection & Optimization Analysis
           <div className="p-2 bg-white/20 rounded-full">
             <Zap className="w-6 h-6" />
           </div>
@@ -84,12 +84,12 @@ export function Step1Card({ step }: Step1CardProps) {
           <div className="bg-white/80 backdrop-blur-sm rounded-xl p-4 border border-blue-200">
             <h3 className="text-lg font-bold text-blue-800 mb-4 flex items-center gap-2">
               <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
-              Package Combinations Analysis
+              Advanced Package Combination Analysis & Weight Optimization
             </h3>
 
             <div className="space-y-3">
-              {(step?.combos && step.combos.length > 0 ? step.combos : []).map(
-                (c, idx) => (
+              {step?.combos && step.combos.length > 0 ? (
+                step.combos.map((c, idx) => (
                   <AnimatedListItem key={idx} index={idx}>
                     <div
                       className={`
@@ -170,7 +170,30 @@ export function Step1Card({ step }: Step1CardProps) {
                       </div>
                     </div>
                   </AnimatedListItem>
-                )
+                ))
+              ) : (
+                <AnimatedListItem index={0}>
+                  <div className="p-8 rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 text-center">
+                    <div className="flex flex-col items-center gap-4">
+                      <div className="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center">
+                        <Package className="w-8 h-8 text-gray-400 animate-bounce" />
+                      </div>
+                      <div>
+                        <h4 className="text-lg font-semibold text-gray-600 mb-2">
+                          No Package Combinations Found
+                        </h4>
+                        <p className="text-sm text-gray-500 max-w-md">
+                          No optimal package combinations are available at the moment.
+                          This could be due to all packages being assigned or awaiting new data.
+                        </p>
+                      </div>
+                      <div className="flex items-center gap-2 text-xs text-gray-400">
+                        <div className="w-2 h-2 bg-gray-300 rounded-full animate-pulse"></div>
+                        <span>Waiting for data...</span>
+                      </div>
+                    </div>
+                  </div>
+                </AnimatedListItem>
               )}
             </div>
           </div>
@@ -184,7 +207,7 @@ export function Step1Card({ step }: Step1CardProps) {
             <div className="bg-white/80 backdrop-blur-sm rounded-xl p-4 border border-indigo-200">
               <h3 className="text-lg font-bold text-indigo-800 mb-4 flex items-center gap-2">
                 <div className="w-2 h-2 bg-indigo-500 rounded-full animate-pulse"></div>
-                Vehicle Assignment Details
+                Intelligent Vehicle Assignment & Route Optimization Details
               </h3>
 
               <div className="space-y-4">
@@ -265,7 +288,7 @@ export function Step1Card({ step }: Step1CardProps) {
               <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl p-4 border border-green-200">
                 <h3 className="text-lg font-bold text-green-800 mb-4 flex items-center gap-2">
                   <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                  Optimization Summary
+                  Comprehensive Optimization Summary & Performance Metrics
                 </h3>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                   <div className="text-center p-3 bg-white rounded-lg border border-green-200">

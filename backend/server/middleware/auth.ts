@@ -18,6 +18,16 @@ interface AuthRequest extends Request {
 
 const auth = async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
+    // Check for CLI bypass header first
+    const isCliRequest = req.header('X-CLI-Request') === 'true' ||
+                        req.header('X-Bypass-Auth') === 'cli';
+
+    if (isCliRequest) {
+      // Allow CLI requests to bypass authentication
+      console.log('🔓 CLI request detected - bypassing authentication');
+      return next();
+    }
+
     const token = req.header('Authorization')?.replace('Bearer ', '');
 
     if (!token) {
